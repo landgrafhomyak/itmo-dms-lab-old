@@ -16,7 +16,7 @@ data class LabWork {
     val id: Long // Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     val name: String // Строка не может быть пустой
     val coordinates: Coordinates
-    private java.time.ZonedDateTime creationDate // Значение этого поля должно генерироваться автоматически
+    val creationDate: kotlinx.datetime.Instant //  Значение этого поля должно генерироваться автоматически (оригинальный тип: java.time.ZonedDateTime creationDate)
     val minimalPoint: Long // Значение поля должно быть больше 0
     val maximumPoint: Double // Значение поля должно быть больше 0
     val personalQualitiesMaximum: Int // Значение поля должно быть больше 0

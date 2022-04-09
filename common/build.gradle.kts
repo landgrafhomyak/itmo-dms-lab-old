@@ -26,18 +26,23 @@ kotlin {
     }
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
+
     @Suppress("UNUSED_VARIABLE")
     val nativeTarget = when {
         hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+        hostOs == "Linux"    -> linuxX64("native")
+        isMingwX64           -> mingwX64("native")
+        else                 -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
 
     @Suppress("UNUSED_VARIABLE")
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

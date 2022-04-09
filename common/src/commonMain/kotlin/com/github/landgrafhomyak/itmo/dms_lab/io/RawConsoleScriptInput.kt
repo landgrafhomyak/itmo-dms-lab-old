@@ -1,4 +1,4 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.io
 
 /**
  * Чтение запросов из стандартного потока ввода без какого либо форматирования

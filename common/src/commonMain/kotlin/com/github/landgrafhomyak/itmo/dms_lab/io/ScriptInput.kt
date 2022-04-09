@@ -1,4 +1,4 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.io
 
 /**
  * Предоставляет унифицированный доступ к потокам с запросами к базе данных

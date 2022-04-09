@@ -1,11 +1,11 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.io
 
 
 /**
  * Печать сообщений в стандартный поток вывода без какого либо форматирования
  * @see RawConsoleScriptInput
  */
-object RawConsoleScriptOutput : ConsoleOutput {
+object RawConsoleScriptOutput : ScriptOutput {
     override fun info(message: String) {
         println(message)
     }

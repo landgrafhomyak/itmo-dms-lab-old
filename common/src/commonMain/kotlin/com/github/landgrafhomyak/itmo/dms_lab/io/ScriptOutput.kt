@@ -1,10 +1,10 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.io
 
 @Suppress("SpellCheckingInspection")
 /**
  * Логгер
  */
-interface ConsoleOutput {
+interface ScriptOutput {
     /**
      * Передаёт информационное сообщение
      * @param message сообщение

@@ -1,10 +1,10 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.io
 
-@Suppress("SpellCheckingInspection")
+@Suppress("SpellCheckingInspection", "unused")
 /**
  * Дублирует сообщения в несколько логгеров
  */
-class SprayScriptOutput(private vararg val outputs: ConsoleOutput) : ConsoleOutput {
+class SprayScriptOutput(private vararg val outputs: ScriptOutput) : ScriptOutput {
     override fun info(message: String) {
         for (output in this.outputs) {
             output.info(message)
