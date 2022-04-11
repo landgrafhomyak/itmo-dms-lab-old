@@ -1,5 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
+import com.github.landgrafhomyak.itmo.dms_lab.collections.RedBlackTreeSetWithKeyAccess
 import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptOutput
 import kotlin.jvm.JvmStatic
 
@@ -45,11 +46,11 @@ enum class CommandMeta {
     abstract fun argParse(logger: ScriptOutput, args: Array<String>): BoundCommand?
 
     companion object {
-        @Suppress("RemoveExplicitTypeArguments" /* не работает без явного указания типов шаблона */)
-        private val id2obj = buildMap<String, CommandMeta> {
-            for (obj in this@Companion.all()) {
-                this@buildMap.put(obj.id, obj)?.also { another ->
-                    throw RuntimeException("Команды `${obj.name}` и `${another.name}` имеют одинаковый идентификатор")
+        private val id2obj = RedBlackTreeSetWithKeyAccess<String, CommandMeta> { id }.apply buildMap@{
+            @Suppress("RemoveRedundantQualifierName")
+            for (obj in CommandMeta.values()) {
+                if (!this@buildMap.add(obj)) {
+                    throw RuntimeException("Команды `${obj.name}` и `${this@buildMap[obj.id]!!.name}` имеют одинаковый идентификатор")
                 }
             }
         }
@@ -65,6 +66,6 @@ enum class CommandMeta {
          */
         @Suppress("RemoveRedundantQualifierName")
         @JvmStatic
-        fun all(): Array<CommandMeta> = CommandMeta.values()
+        fun all(): Iterable<CommandMeta> = this.id2obj.values
     }
 }

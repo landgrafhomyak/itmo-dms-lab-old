@@ -1,7 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
 import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptOutput
-import com.github.landgrafhomyak.itmo.dms_lab.collections.LabWorksCollection
+import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 import kotlin.jvm.JvmField
 
 @Suppress("SpellCheckingInspection")

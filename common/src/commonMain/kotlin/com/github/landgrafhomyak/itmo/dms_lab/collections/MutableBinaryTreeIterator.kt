@@ -4,21 +4,23 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
 /**
  * Итератор для бинарных (двоичных) деревьев
  *
- * Перебирает узлы в порядке **(левое поддерево)-(узел)-(правое поддерево)**
+ * Перебирает узлы в порядке _**(левое поддерево)-(узел)-(правое поддерево)**_
  *
  * @param top вершина (корень) дерева
- * @param linksGetter геттер ссылок на связанные узлы
- * @see BinaryTreeIterator.addNodeToStack
+ * @param linksGetter геттер извлекающий [ссылки на связанные узлы][BinaryTreeLinksWithColor] из данного узла
+ * @see MutableBinaryTreeIterator.addNodeToStack
  */
-class BinaryTreeIterator<N : Any>(
+class MutableBinaryTreeIterator<N : Any>(
+    private val collection: MutableLinkedCollection<N>,
     top: N?,
     private val linksGetter: N.() -> BinaryTreeLinks<N>
-) : Iterator<N> {
+) : MutableIterator<N> {
 
     /**
      * Путь от вершины к узлу который будет возвращён следующим
      */
     private val stack = mutableListOf<N>()
+    lateinit var last: N
 
     init {
         if (top != null) {
@@ -46,6 +48,11 @@ class BinaryTreeIterator<N : Any>(
         return this.stack.last().also { current ->
             this.stack.removeLast()
             this.linksGetter(current).right?.also(this::addNodeToStack)
+            this.last = current
         }
+    }
+
+    override fun remove() {
+        this.collection.exclude(this.last)
     }
 }

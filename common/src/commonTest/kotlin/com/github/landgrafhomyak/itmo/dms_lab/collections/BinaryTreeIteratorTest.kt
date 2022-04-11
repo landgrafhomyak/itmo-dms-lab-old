@@ -1,3 +1,5 @@
+@file:Suppress("NothingToInline")
+
 package com.github.landgrafhomyak.itmo.dms_lab.collections
 
 import kotlin.test.Test
@@ -6,7 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
- * Тесты для [итератора бинарных деревьев][BinaryTreeIterator]
+ * Тесты для [итератора бинарных деревьев][MutableBinaryTreeIterator]
  */
 internal class BinaryTreeIteratorTest {
     /**
@@ -28,9 +30,18 @@ internal class BinaryTreeIteratorTest {
     }
 
     /**
+     * Объект пустышка для инициализации итератора
+     */
+    private object NoCollection : MutableLinkedCollection<Node> {
+        override fun link(node: Node): Node? = null
+
+        override fun exclude(node: Node) {}
+    }
+
+    /**
      * Создаёт итератор для переданного дерева (вершины дерева) и делает над ним необходимые преобразования для использования в тестировании
      */
-    private fun wrapIterator(top: Node?) = BinaryTreeIterator(top) node@{ this@node }.asSequence()
+    private fun wrapIterator(top: Node?) = MutableBinaryTreeIterator(NoCollection, top) node@{ this@node }.asSequence()
 
     /**
      * Проверка на то что итератор пустого дерева (отсутствует вершина) ничего не возвращает
@@ -51,7 +62,7 @@ internal class BinaryTreeIteratorTest {
     @Test
     fun testEmptyFails() {
         assertFailsWith(IllegalArgumentException::class) {
-            BinaryTreeIterator(null) node@{ this@node }.next()
+            MutableBinaryTreeIterator(NoCollection, null) node@{ this@node }.next()
         }
     }
 
