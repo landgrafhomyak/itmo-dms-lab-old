@@ -47,6 +47,9 @@ abstract class PriorityQueueAbstractTest {
         assertEquals(expected, actual, "Размер дерева ($actual) отличается от ожидаемого ($expected)")
     }
 
+    /**
+     * Проверяет что очередь сохраняет в себе элементы
+     */
     @Test
     fun addingElements() = this.queue<Int> {
         val elements = listOf(5, -2, 3, 6, 4, -10, -9, -11, 0, 55, -65, 54, -63, 22, -19)
@@ -56,6 +59,9 @@ abstract class PriorityQueueAbstractTest {
         assertContentEquals(elements)
     }
 
+    /**
+     * Проверяет что очередь выполняет все условия для первого элемента
+     */
     @Test
     fun extractingElements() = this.queue<Int> {
         val elements = listOf(5, -2, 3, 6, 4, -10, -9, -11, 0, 55, -65, 54, -63, 22, -19)

@@ -15,8 +15,8 @@ import kotlin.jvm.JvmName
  *     == 0 -> узел найден
  * }
  * ```
- * @param linksGetter геттер извлекающий [ссылки на связанные узлы и цвет][BinaryTreeLinksWithColor] из данного узла
- * @param keyGetter геттер извлекающий ключ из данного узла
+ * @param linksGetter гетер извлекающий [ссылки на связанные узлы и цвет][BinaryTreeLinksWithColor] из данного узла
+ * @param keyGetter гетер извлекающий ключ из данного узла
  * @see AbstractRedBlackTree.bind
  * @see RedBlackTreeMap
  * @see RedBlackTreeSet
@@ -133,7 +133,7 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
         }
 
     /**
-     * Сокращение [геттера для извлечения ключа][keyGetter] из узла
+     * Сокращение [гетера для извлечения ключа][keyGetter] из узла
      */
     private inline val N.key: K
         get() = this@AbstractRedBlackTree.keyGetter(this)

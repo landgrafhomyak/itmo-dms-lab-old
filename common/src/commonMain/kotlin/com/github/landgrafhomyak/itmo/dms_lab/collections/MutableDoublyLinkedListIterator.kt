@@ -1,5 +1,9 @@
 package com.github.landgrafhomyak.itmo.dms_lab.collections
 
+@Suppress("SpellCheckingInspection")
+/**
+ * Итератор для [двусвязных списков](https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D1%83%D1%81%D0%B2%D1%8F%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA)
+ */
 class MutableDoublyLinkedListIterator<N : Any>(
     private val collection: AbstractMutableLinkedCollection<N>,
     start: N?,
@@ -19,7 +23,7 @@ class MutableDoublyLinkedListIterator<N : Any>(
      */
     private var last: N? = null
 
-     /**
+    /**
      * Сокращение для поля [DoublyLinkedListLinks.next]
      */
     private inline var N.next: N?

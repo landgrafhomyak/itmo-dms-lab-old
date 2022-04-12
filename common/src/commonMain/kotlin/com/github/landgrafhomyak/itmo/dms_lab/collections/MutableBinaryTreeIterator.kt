@@ -2,12 +2,12 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
 
 
 /**
- * Итератор для бинарных (двоичных) деревьев
+ * Итератор для [бинарных (двоичных) деревьев](https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE)
  *
  * Перебирает узлы в порядке _**(левое поддерево)-(узел)-(правое поддерево)**_
  *
  * @param top вершина (корень) дерева
- * @param linksGetter геттер извлекающий [ссылки на связанные узлы][BinaryTreeLinksWithColor] из данного узла
+ * @param linksGetter гетер извлекающий [ссылки на связанные узлы][BinaryTreeLinksWithColor] из данного узла
  * @see MutableBinaryTreeIterator.addNodeToStack
  */
 class MutableBinaryTreeIterator<N : Any>(

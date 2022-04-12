@@ -6,18 +6,53 @@ private open class BinaryTreeLinksImpl<N : Any> : BinaryTreeLinks<N> {
     override var parent: N? = null
     override var left: N? = null
     override var right: N? = null
+    override fun toString(): String = "<bin tree node>"
 }
 
+/**
+ * Создаёт пустой узел для [бинарного (двоичного) дерева](https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE)
+ */
 @Suppress("FunctionName", "unused")
 fun <N : Any> BinaryTreeLinks(): BinaryTreeLinks<N> = BinaryTreeLinksImpl()
 
 private open class BinaryTreeLinksWithColorImpl<N : Any, C : Any> : BinaryTreeLinksImpl<N>(), BinaryTreeLinksWithColor<N, C> {
     override lateinit var color: C
+    override fun toString(): String = "<bin tree node with color>"
 }
 
+/**
+ * Создаёт пустой узел для [бинарного (двоичного) дерева](https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE)
+ * с цветом
+ */
 @Suppress("FunctionName", "unused")
 fun <N : Any, C : Any> BinaryTreeLinksWithColor(): BinaryTreeLinksWithColor<N, C> = BinaryTreeLinksWithColorImpl()
 
+private open class SinglyLinkedListLinksImpl<N : Any> : SinglyLinkedListLinks<N> {
+    override var next: N? = null
+    override fun toString(): String = "<singly-linked list node>"
+}
+
+/**
+ * Создаёт пустой узел для [односвязного списка](https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D0%B2%D1%8F%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA)
+ */
+@Suppress("FunctionName", "unused")
+fun <N : Any, C : Any> SinglyLinkedListLinks(): SinglyLinkedListLinks<N> = SinglyLinkedListLinksImpl()
+
+private open class DoublyLinkedListLinksImpl<N : Any> : SinglyLinkedListLinksImpl<N>(), DoublyLinkedListLinks<N> {
+    override var prev: N? = null
+    override fun toString(): String = "<doubly-linked list node>"
+}
+
+/**
+ * Создаёт пустой узел для [двусвязного списка](https://ru.wikipedia.org/wiki/%D0%A1%D0%B2%D1%8F%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA)
+ */
+@Suppress("FunctionName", "unused", "SpellCheckingInspection")
+fun <N : Any, C : Any> DoublyLinkedListLinks(): DoublyLinkedListLinks<N> = DoublyLinkedListLinksImpl()
+
+
+/**
+ * Реализация словаря на [красно-чёрном дереве][AbstractRedBlackTree]
+ */
 @Suppress("unused")
 class RedBlackTreeMap<K : Comparable<K>, V> : MutableMap<K, V> {
     private class Node<K, V>(
@@ -30,6 +65,8 @@ class RedBlackTreeMap<K : Comparable<K>, V> : MutableMap<K, V> {
         override var right: Node<K, V>? = null
         override lateinit var color: AbstractRedBlackTree.Color
         override fun setValue(newValue: V): V = this.value.also { this.value = newValue }
+        override fun toString(): String = "<rb-tree map node key='${this.key}' value='${this.value}'>"
+
     }
 
 
@@ -66,7 +103,9 @@ class RedBlackTreeMap<K : Comparable<K>, V> : MutableMap<K, V> {
     }
 }
 
-
+/**
+ * Реализация множества на [красно-чёрном дереве][AbstractRedBlackTree]
+ */
 @Suppress("unused")
 class RedBlackTreeSet<E : Comparable<E>> : MutableSet<E> {
     private class Node<E>(
@@ -76,6 +115,7 @@ class RedBlackTreeSet<E : Comparable<E>> : MutableSet<E> {
         override var left: Node<E>? = null
         override var right: Node<E>? = null
         override lateinit var color: AbstractRedBlackTree.Color
+        override fun toString(): String = "<rb-tree set node element='${this.element}'>"
     }
 
 
@@ -133,7 +173,11 @@ class RedBlackTreeSet<E : Comparable<E>> : MutableSet<E> {
     override fun isEmpty(): Boolean = this.tree.isEmpty()
 }
 
-
+/**
+ * Реализация словаря на [красно-чёрном дереве][AbstractRedBlackTree] с возможностью обращения к элементам по ключу, который они в себе содержат
+ * @param keyGetter гетер который извлекает ключ для элемента
+ * @see RedBlackTreeMap
+ */
 @Suppress("unused")
 class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
     private val keyGetter: E.() -> K
@@ -154,6 +198,8 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
             get() = this@Node.element.key
         override val value: E
             get() = this.element
+
+        override fun toString(): String = "<rb-tree set with key access node element='${this.element}' key='${this.key}'>"
     }
 
     private val tree = AbstractRedBlackTree<Node, K>(node@{ this@node }, node@{ this@node.key })
@@ -221,11 +267,15 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
     override fun containsAll(elements: Collection<E>): Boolean = elements.map(this::contains).all { p -> p }
 }
 
-@Suppress("unused")
+/**
+ * Реализация очереди с приоритетом на [двусвязном списке][AbstractLinkedListPriorityQueue]
+ */
+@Suppress("unused", "SpellCheckingInspection")
 class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E> {
     private class Node<E>(val element: E) : DoublyLinkedListLinks<Node<E>> {
         override var prev: Node<E>? = null
         override var next: Node<E>? = null
+        override fun toString(): String = "<linked list priority queue node element='${this.element}'>"
     }
 
 

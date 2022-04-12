@@ -5,6 +5,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
  * Абстрактная реализация [очереди с приоритетом](https://ru.wikipedia.org/wiki/%D0%9E%D1%87%D0%B5%D1%80%D0%B5%D0%B4%D1%8C_%D1%81_%D0%BF%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82%D0%BE%D0%BC_(%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5))
  * на [двусвязном списке](https://ru.wikipedia.org/wiki/%D0%A1%D0%B2%D1%8F%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA)
  * @see AbstractLinkedHeapPriorityQueue
+ * @see LinkedListPriorityQueue
  */
 class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
     private val linksGetter: N.() -> DoublyLinkedListLinks<N>, private val keyGetter: N.() -> K
@@ -33,7 +34,7 @@ class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
         }
 
     /**
-     * Сокращение [геттера для извлечения ключа][keyGetter] из узла
+     * Сокращение [гетера для извлечения ключа][keyGetter] из узла
      */
     private inline val N.key: K
         get() = this@AbstractLinkedListPriorityQueue.keyGetter(this)
