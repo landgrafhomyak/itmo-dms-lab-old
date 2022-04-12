@@ -1,5 +1,6 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.6.20-blue.svg)](http://kotlinlang.org)
-
+![Tests](https://github.com/landgrafhomyak/itmo-bevm/actions/workflows/test.yml/badge.svg)
+[![](https://jitpack.io/v/landgrafhomyak/itmo-dms-lab.svg)](https://jitpack.io/#landgrafhomyak/itmo-dms-lab)
 # Лабораторные работы №5-8 по программированию на факультете программной инженерии и компьютерной техники в [ИТМО](http://itmo.ru)
 
 > **Запрещается продажа и/или использование данного кода для получения зачёта путём сдачи практику**
