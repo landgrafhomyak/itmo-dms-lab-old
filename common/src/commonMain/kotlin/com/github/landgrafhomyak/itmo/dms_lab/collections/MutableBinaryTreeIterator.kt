@@ -4,14 +4,14 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
 /**
  * Итератор для [бинарных (двоичных) деревьев](https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D0%BE%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D1%80%D0%B5%D0%B2%D0%BE)
  *
- * Перебирает узлы в порядке _**(левое поддерево)-(узел)-(правое поддерево)**_
+ * Перебирает узлы в порядке **(левое поддерево)-(узел)-(правое поддерево)**
  *
  * @param top вершина (корень) дерева
  * @param linksGetter гетер извлекающий [ссылки на связанные узлы][BinaryTreeLinksWithColor] из данного узла
  * @see MutableBinaryTreeIterator.addNodeToStack
  */
 class MutableBinaryTreeIterator<N : Any>(
-    private val collection: AbstractMutableLinkedCollection<N>,
+    private val collection: AbstractClearableLinkedCollection<N>,
     top: N?,
     private val linksGetter: N.() -> BinaryTreeLinks<N>
 ) : MutableIterator<N> {
@@ -19,14 +19,14 @@ class MutableBinaryTreeIterator<N : Any>(
     /**
      * Путь от вершины к узлу который будет возвращён следующим
      */
-    private val stack = mutableListOf<N>()
+    private val stack: Stack<N> = ArrayStack()
 
     /**
      * Ссылка на последний возвращённый итератором элемент
      *
      * Равна `null` если дерево пустое или итерация не была начата
      */
-    var last: N? = null
+    private var last: N? = null
 
     init {
         if (top != null) {
@@ -39,9 +39,9 @@ class MutableBinaryTreeIterator<N : Any>(
      * элемент который, будет возвращён следующим. После его удаления из [стека][stack] должна быть вызвана эта функция для его правого ребёнка
      */
     private fun addNodeToStack(node: N) {
-        this.stack.add(node)
+        this.stack.push(node)
         while (true) {
-            this.stack.add(this.linksGetter(this.stack.last()).left ?: break)
+            this.stack.push(this.linksGetter(this.stack.top).left ?: break)
         }
     }
 
@@ -52,8 +52,8 @@ class MutableBinaryTreeIterator<N : Any>(
             @Suppress("SpellCheckingInspection")
             throw IllegalArgumentException("Итерирование бинарного дерева завершено")
 
-        return this.stack.last().also { current ->
-            this.stack.removeLast()
+        return this.stack.top.also { current ->
+            this.stack.pop()
             this.linksGetter(current).right?.also(this::addNodeToStack)
             this.last = current
         }

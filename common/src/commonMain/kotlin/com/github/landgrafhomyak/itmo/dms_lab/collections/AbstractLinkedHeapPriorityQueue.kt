@@ -11,7 +11,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
 private class AbstractLinkedHeapPriorityQueue<N : Any, K : Comparable<K>> private constructor(
     private val linksGetter: N.() -> BinaryTreeLinks<N>,
     private val keyGetter: N.() -> K
-) : AbstractMutableLinkedCollection<N>, MutableIterable<N> {
+) : AbstractMutableLinkedCollection<N> {
     override fun iterator(): MutableIterator<N> {
         TODO("Not yet implemented")
     }

@@ -9,7 +9,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
  */
 class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
     private val linksGetter: N.() -> DoublyLinkedListLinks<N>, private val keyGetter: N.() -> K
-) : AbstractMutableLinkedCollection<N>, MutableIterable<N> {
+) : AbstractMutableLinkedCollection<N> {
     /**
      * Ссылка на начало списка
      */

@@ -30,12 +30,18 @@ internal class BinaryTreeIteratorTest {
     }
 
     /**
-     * Объект пустышка для инициализации итератора
+     * Объект-пустышка для инициализации итератора
      */
     private object NoCollection : AbstractMutableLinkedCollection<Node> {
         override fun bind(node: Node): Node? = null
 
         override fun untie(node: Node) {}
+        override fun iterator(): MutableIterator<Node> = object : MutableIterator<Node> {
+            override fun hasNext(): Boolean = false
+            override fun next(): Node = throw  IllegalStateException()
+            override fun remove() {}
+
+        }
     }
 
     /**

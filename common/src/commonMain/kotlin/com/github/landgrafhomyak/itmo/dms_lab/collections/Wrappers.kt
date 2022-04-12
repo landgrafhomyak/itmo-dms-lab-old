@@ -271,7 +271,7 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
  * Реализация очереди с приоритетом на [двусвязном списке][AbstractLinkedListPriorityQueue]
  */
 @Suppress("unused", "SpellCheckingInspection")
-class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E> {
+class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E>, MutableIterable<E> {
     private class Node<E>(val element: E) : DoublyLinkedListLinks<Node<E>> {
         override var prev: Node<E>? = null
         override var next: Node<E>? = null
@@ -284,7 +284,7 @@ class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E> {
         node@{ this@node.element }
     )
 
-    override val top: E?
+    override val maxOrNull: E?
         get() = this.queue.start?.element
 
     @JvmInline
@@ -294,7 +294,6 @@ class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E> {
         override fun hasNext(): Boolean = this.original.hasNext()
         override fun next(): E = this.original.next().element
         override fun remove() = this.original.remove()
-
     }
 
     override fun iterator(): MutableIterator<E> = Node2ElementIterator(this.queue.iterator())
@@ -304,5 +303,171 @@ class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E> {
     }
 
     override fun popOrNull(): E? = this.queue.start?.also { start -> this.queue.untie(start) }?.element
+}
 
+/**
+ * Реализация [стека](https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BA)
+ * на списке
+ */
+@Suppress("unused")
+class ArrayStack<E> : Stack<E>, MutableList<E> {
+    private val list: MutableList<E> = ArrayList()
+    override val size: Int
+        get() = this.list.size
+
+
+    override fun push(element: E) {
+        this.list.add(element)
+    }
+
+    override fun popOrNull(): E? = this.list.removeLastOrNull()
+
+    override val topOrNull: E?
+        get() = this.list.lastOrNull()
+
+    override operator fun contains(element: E): Boolean = this.list.contains(element)
+
+    override fun containsAll(elements: Collection<E>): Boolean = this.list.containsAll(elements)
+
+    override operator fun get(index: Int): E = this.list[index]
+
+    override fun indexOf(element: E): Int = this.list.indexOf(element)
+
+    override fun isEmpty(): Boolean = this.list.isEmpty()
+
+    override fun iterator(): MutableIterator<E> = this.list.iterator()
+
+    override fun lastIndexOf(element: E): Int = this.list.lastIndexOf(element)
+
+    override fun listIterator(): MutableListIterator<E> = this.list.listIterator()
+
+    override fun listIterator(index: Int): MutableListIterator<E> = this.list.listIterator(index)
+
+    override fun subList(fromIndex: Int, toIndex: Int): MutableList<E> = this.list.subList(fromIndex, toIndex)
+
+    override fun add(element: E): Boolean = this.list.add(element)
+
+    override fun add(index: Int, element: E) = this.list.add(index, element)
+
+    override fun addAll(index: Int, elements: Collection<E>): Boolean = this.list.addAll(index, elements)
+
+    override fun addAll(elements: Collection<E>): Boolean = this.list.addAll(elements)
+
+    override fun clear() = this.list.clear()
+
+    override fun remove(element: E): Boolean = this.list.remove(element)
+
+    override fun removeAll(elements: Collection<E>): Boolean = this.list.removeAll(elements)
+
+    override fun removeAt(index: Int): E = this.list.removeAt(index)
+
+    override fun retainAll(elements: Collection<E>): Boolean = this.list.retainAll(elements)
+
+    override operator fun set(index: Int, element: E): E = this.list.set(index, element)
+}
+
+
+/**
+ * Реализация [очереди](https://ru.wikipedia.org/wiki/%D0%9E%D1%87%D0%B5%D1%80%D0%B5%D0%B4%D1%8C_(%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5))
+ * на [односвязном списке][AbstractLinkedQueue]
+ */
+class LinkedQueue<E : Any> : Queue<E> {
+    private class Node<E>(val element: E) : SinglyLinkedListLinks<Node<E>> {
+        override var next: Node<E>? = null
+        override fun toString(): String = "<linked queue node element='${this.element}'>"
+    }
+
+    private val queue = AbstractLinkedQueue<Node<E>> node@{ this@node }
+
+    @JvmInline
+    private value class Node2ElementIterator<E>(
+        private val original: Iterator<Node<E>>
+    ) : Iterator<E> {
+        override fun hasNext(): Boolean = this.original.hasNext()
+        override fun next(): E = this.original.next().element
+    }
+
+    override fun iterator(): Iterator<E> = Node2ElementIterator(this.queue.iterator())
+
+    override fun push(element: E) {
+        this.queue.bind(Node(element))
+    }
+
+    override fun popOrNull(): E? = this.queue.popOrNull()?.element
+
+    override val firstOrNull: E?
+        get() = this.queue.start?.element
+}
+
+
+/**
+ * Реализация [стека](https://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BA)
+ * на [односвязном списке][AbstractLinkedStack]
+ */
+class LinkedStack<E : Any> : Stack<E> {
+    private class Node<E>(val element: E) : SinglyLinkedListLinks<Node<E>> {
+        override var next: Node<E>? = null
+        override fun toString(): String = "<linked stack node element='${this.element}'>"
+    }
+
+    private val stack = AbstractLinkedStack<Node<E>> node@{ this@node }
+
+    override fun push(element: E) {
+        this.stack.bind(Node(element))
+    }
+
+    override fun popOrNull(): E? = this.stack.popOrNull()?.element
+
+    override val topOrNull: E?
+        get() = this.stack.top?.element
+
+    @JvmInline
+    private value class Node2ElementIterator<E>(
+        private val original: Iterator<Node<E>>
+    ) : Iterator<E> {
+        override fun hasNext(): Boolean = this.original.hasNext()
+        override fun next(): E = this.original.next().element
+    }
+
+    override fun iterator(): Iterator<E> = Node2ElementIterator(this.stack.iterator())
+}
+
+
+/**
+ * Реализация [дека (двусторонней очереди)](https://ru.wikipedia.org/wiki/%D0%94%D0%B2%D1%83%D1%85%D1%81%D1%82%D0%BE%D1%80%D0%BE%D0%BD%D0%BD%D1%8F%D1%8F_%D0%BE%D1%87%D0%B5%D1%80%D0%B5%D0%B4%D1%8C)
+ * на [двусвязном списке][AbstractLinkedDeque]
+ */
+@Suppress("unused", "SpellCheckingInspection")
+class LinkedDeque<E : Comparable<E>> : Deque<E> {
+    private class Node<E>(val element: E) : DoublyLinkedListLinks<Node<E>> {
+        override var prev: Node<E>? = null
+        override var next: Node<E>? = null
+        override fun toString(): String = "<linked deque node element='${this.element}'>"
+    }
+
+    private val deque = AbstractLinkedDeque<Node<E>> node@{ this@node }
+
+    @JvmInline
+    private value class Node2ElementIterator<E>(
+        private val original: MutableIterator<Node<E>>
+    ) : MutableIterator<E> {
+        override fun hasNext(): Boolean = this.original.hasNext()
+        override fun next(): E = this.original.next().element
+        override fun remove() = this.original.remove()
+    }
+
+    override fun iterator(): MutableIterator<E> = Node2ElementIterator(this.deque.iterator())
+
+    override fun pushBack(element: E)=this.deque.pushBack(Node(element))
+
+    override fun pushFront(element: E) =this.deque.pushFront(Node(element))
+
+    override fun popBackOrNull(): E? =this.deque.popBackOrNull()?.element
+
+    override fun popFrontOrNull(): E? = this.deque.popFrontOrNull()?.element
+
+    override val frontOrNull: E?
+        get() = this.deque.front?.element
+    override val backOrNull: E?
+        get() = this.deque.back?.element
 }
