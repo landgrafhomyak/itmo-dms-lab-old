@@ -121,4 +121,9 @@ interface Deque<E> : Queue<E>, MutableIterable<E> {
      */
     @Suppress("RedundantOverride")
     override fun isNotEmpty() = super.isNotEmpty()
+
+    /**
+     * Удаляет все элементы из дека
+     */
+    override fun clear()
 }

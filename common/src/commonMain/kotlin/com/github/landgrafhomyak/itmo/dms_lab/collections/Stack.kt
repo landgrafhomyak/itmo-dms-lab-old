@@ -43,4 +43,9 @@ interface Stack<E> : Iterable<E> {
      * Проверка, что стек пустой
      */
     fun isEmpty() = this.topOrNull == null
+
+    /**
+     * Удаляет все элементы из стека
+     */
+    fun clear()
 }

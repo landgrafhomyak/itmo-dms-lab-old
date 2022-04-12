@@ -43,4 +43,9 @@ interface Queue<E> : Iterable<E> {
      * Проверка, что очередь пустая
      */
     fun isEmpty() = this.firstOrNull == null
+
+    /**
+     * Удаляет все элементы из очереди
+     */
+    fun clear()
 }

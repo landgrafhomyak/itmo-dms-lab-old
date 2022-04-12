@@ -51,4 +51,11 @@ class AbstractLinkedQueue<N : Any>(
     }
 
     override fun iterator(): Iterator<N> = SinglyLinkedListIterator(this.start, this.linksGetter)
+
+    /**
+     * Удаляет все узлы из очереди
+     */
+    fun clear() {
+        this.start = null
+    }
 }

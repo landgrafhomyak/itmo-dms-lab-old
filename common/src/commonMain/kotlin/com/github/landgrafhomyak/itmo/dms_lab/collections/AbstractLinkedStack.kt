@@ -40,4 +40,11 @@ class AbstractLinkedStack<N : Any>(
     }
 
     override fun iterator(): Iterator<N> = SinglyLinkedListIterator(this.top, this.linksGetter)
+
+    /**
+     * Удаляет все узлы из стека
+     */
+    fun clear() {
+        this.top = null
+    }
 }

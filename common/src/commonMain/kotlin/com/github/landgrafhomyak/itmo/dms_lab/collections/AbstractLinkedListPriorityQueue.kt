@@ -13,7 +13,7 @@ class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
     /**
      * Ссылка на начало списка
      */
-    var start: N? = null
+    var max: N? = null
 
     /**
      * Сокращение для поля [DoublyLinkedListLinks.prev]
@@ -42,7 +42,7 @@ class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
 
     override fun bind(node: N): N? {
         var prevPointer: N? = null
-        var pointer: N? = this.start
+        var pointer: N? = this.max
 
         while (pointer != null && node.key < pointer.key) {
             prevPointer = pointer
@@ -50,9 +50,9 @@ class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
         }
 
         if (prevPointer == null) {
-            node.next = this.start
-            this.start?.prev = node
-            this.start = node
+            node.next = this.max
+            this.max?.prev = node
+            this.max = node
             node.prev = null
             return null
         }
@@ -66,8 +66,8 @@ class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
     }
 
     override fun untie(node: N) {
-        if (node === this.start) {
-            this.start = node.next
+        if (node === this.max) {
+            this.max = node.next
         }
 
         node.prev?.next = node.next
@@ -77,5 +77,9 @@ class AbstractLinkedListPriorityQueue<N : Any, K : Comparable<K>>(
         node.next = null
     }
 
-    override fun iterator(): MutableIterator<N> = MutableDoublyLinkedListIterator<N>(this, this.start, this.linksGetter)
+    override fun iterator(): MutableIterator<N> = MutableDoublyLinkedListIterator(this, this.max, this.linksGetter)
+
+    fun clear() {
+        this.max = null
+    }
 }

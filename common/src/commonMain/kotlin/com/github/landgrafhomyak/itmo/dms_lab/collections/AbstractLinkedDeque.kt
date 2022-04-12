@@ -96,4 +96,12 @@ class AbstractLinkedDeque<N : Any>(
     fun popBackOrNull(): N? = this.back?.also(this::untie)
 
     override fun iterator(): MutableIterator<N> = MutableDoublyLinkedListIterator(this, this.front, this.linksGetter)
+
+    /**
+     * Удаляет все узлы из дек
+     */
+    fun clear() {
+        this.front = null
+        this.back = null
+    }
 }

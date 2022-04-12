@@ -36,7 +36,7 @@ private open class SinglyLinkedListLinksImpl<N : Any> : SinglyLinkedListLinks<N>
  * Создаёт пустой узел для [односвязного списка](https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D0%B2%D1%8F%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA)
  */
 @Suppress("FunctionName", "unused")
-fun <N : Any, C : Any> SinglyLinkedListLinks(): SinglyLinkedListLinks<N> = SinglyLinkedListLinksImpl()
+fun <N : Any> SinglyLinkedListLinks(): SinglyLinkedListLinks<N> = SinglyLinkedListLinksImpl()
 
 private open class DoublyLinkedListLinksImpl<N : Any> : SinglyLinkedListLinksImpl<N>(), DoublyLinkedListLinks<N> {
     override var prev: N? = null
@@ -47,7 +47,7 @@ private open class DoublyLinkedListLinksImpl<N : Any> : SinglyLinkedListLinksImp
  * Создаёт пустой узел для [двусвязного списка](https://ru.wikipedia.org/wiki/%D0%A1%D0%B2%D1%8F%D0%B7%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA)
  */
 @Suppress("FunctionName", "unused", "SpellCheckingInspection")
-fun <N : Any, C : Any> DoublyLinkedListLinks(): DoublyLinkedListLinks<N> = DoublyLinkedListLinksImpl()
+fun <N : Any> DoublyLinkedListLinks(): DoublyLinkedListLinks<N> = DoublyLinkedListLinksImpl()
 
 
 /**
@@ -285,7 +285,7 @@ class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E>, MutableIter
     )
 
     override val maxOrNull: E?
-        get() = this.queue.start?.element
+        get() = this.queue.max?.element
 
     @JvmInline
     private value class Node2ElementIterator<E>(
@@ -302,7 +302,9 @@ class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E>, MutableIter
         this.queue.bind(Node(element))
     }
 
-    override fun popOrNull(): E? = this.queue.start?.also { start -> this.queue.untie(start) }?.element
+    override fun popOrNull(): E? = this.queue.max?.also { start -> this.queue.untie(start) }?.element
+
+    override fun clear() = this.queue.clear()
 }
 
 /**
@@ -397,6 +399,8 @@ class LinkedQueue<E : Any> : Queue<E> {
 
     override val firstOrNull: E?
         get() = this.queue.start?.element
+
+    override fun clear() = this.queue.clear()
 }
 
 
@@ -430,6 +434,7 @@ class LinkedStack<E : Any> : Stack<E> {
     }
 
     override fun iterator(): Iterator<E> = Node2ElementIterator(this.stack.iterator())
+    override fun clear() = this.stack.clear()
 }
 
 
@@ -458,11 +463,11 @@ class LinkedDeque<E : Comparable<E>> : Deque<E> {
 
     override fun iterator(): MutableIterator<E> = Node2ElementIterator(this.deque.iterator())
 
-    override fun pushBack(element: E)=this.deque.pushBack(Node(element))
+    override fun pushBack(element: E) = this.deque.pushBack(Node(element))
 
-    override fun pushFront(element: E) =this.deque.pushFront(Node(element))
+    override fun pushFront(element: E) = this.deque.pushFront(Node(element))
 
-    override fun popBackOrNull(): E? =this.deque.popBackOrNull()?.element
+    override fun popBackOrNull(): E? = this.deque.popBackOrNull()?.element
 
     override fun popFrontOrNull(): E? = this.deque.popFrontOrNull()?.element
 
@@ -470,4 +475,6 @@ class LinkedDeque<E : Comparable<E>> : Deque<E> {
         get() = this.deque.front?.element
     override val backOrNull: E?
         get() = this.deque.back?.element
+
+    override fun clear() = this.deque.clear()
 }
