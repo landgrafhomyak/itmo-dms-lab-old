@@ -32,10 +32,10 @@ internal class BinaryTreeIteratorTest {
     /**
      * Объект пустышка для инициализации итератора
      */
-    private object NoCollection : MutableLinkedCollection<Node> {
-        override fun link(node: Node): Node? = null
+    private object NoCollection : AbstractMutableLinkedCollection<Node> {
+        override fun bind(node: Node): Node? = null
 
-        override fun exclude(node: Node) {}
+        override fun untie(node: Node) {}
     }
 
     /**

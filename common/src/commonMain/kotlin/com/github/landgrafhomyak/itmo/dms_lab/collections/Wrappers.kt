@@ -55,16 +55,84 @@ class RedBlackTreeMap<K : Comparable<K>, V> : MutableMap<K, V> {
 
     override fun clear() = this.tree.clear()
 
-    override fun put(key: K, value: V): V? = this.tree.link(Node(key, value))?.value
+    override fun put(key: K, value: V): V? = this.tree.bind(Node(key, value))?.value
 
     override fun putAll(from: Map<out K, V>) = from.forEach { (k, v) -> this[k] = v }
 
     override fun remove(key: K): V? {
         val node = this.tree[key] ?: return null
-        this.tree.exclude(node)
+        this.tree.untie(node)
         return node.value
     }
 }
+
+
+@Suppress("unused")
+class RedBlackTreeSet<E : Comparable<E>> : MutableSet<E> {
+    private class Node<E>(
+        val element: E,
+    ) : BinaryTreeLinksWithColor<Node<E>, AbstractRedBlackTree.Color> {
+        override var parent: Node<E>? = null
+        override var left: Node<E>? = null
+        override var right: Node<E>? = null
+        override lateinit var color: AbstractRedBlackTree.Color
+    }
+
+
+    private val tree = AbstractRedBlackTree<Node<E>, E>(node@{ this@node }, node@{ this@node.element })
+
+    override fun add(element: E): Boolean = this.tree.bind(Node(element))?.also { old ->
+        this.tree.bind(old)
+    } == null
+
+    override fun addAll(elements: Collection<E>): Boolean = elements.map(this::add).any { p -> p }
+
+    override fun clear() = this.tree.clear()
+
+    @JvmInline
+    private value class Node2ElementIterator<E : Comparable<E>>(
+        private val original: MutableIterator<Node<E>>
+    ) : MutableIterator<E> {
+        override fun hasNext(): Boolean = this.original.hasNext()
+        override fun next(): E = this.original.next().element
+        override fun remove() = this.original.remove()
+
+    }
+
+    override fun iterator(): MutableIterator<E> = Node2ElementIterator(this.tree.iterator())
+
+    override fun remove(element: E): Boolean {
+        val node = this.tree[element] ?: return false
+        this.tree.untie(node)
+        return true
+    }
+
+    override fun removeAll(elements: Collection<E>): Boolean = elements.map(this::remove).any { p -> p }
+
+    override fun retainAll(elements: Collection<E>): Boolean {
+        val allElements = this.iterator().asSequence().toList()
+        var anyDeleted = false
+        for (elem in allElements) {
+            if (elem !in elements) {
+                this.tree[elem]?.also { node ->
+                    this.tree.untie(node)
+                    anyDeleted = true
+                }
+            }
+        }
+        return anyDeleted
+    }
+
+    override val size: Int
+        get() = this.tree.size
+
+    override fun contains(element: E): Boolean = element in this.tree
+
+    override fun containsAll(elements: Collection<E>): Boolean = this.map(this::contains).all { p -> p }
+
+    override fun isEmpty(): Boolean = this.tree.isEmpty()
+}
+
 
 @Suppress("unused")
 class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
@@ -108,7 +176,7 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
     override val values: Collection<E>
         get() = this.tree.map { node -> node.element }
 
-    override fun add(element: E): Boolean = this.tree.link(this.Node(element)) != null
+    override fun add(element: E): Boolean = this.tree.bind(this.Node(element)) != null
 
     override fun addAll(elements: Collection<E>): Boolean = elements.map(this::add).any { p -> p }
 
@@ -128,7 +196,7 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
 
     override fun remove(element: E): Boolean {
         val node = this.tree[element.key] ?: return false
-        this.tree.exclude(node)
+        this.tree.untie(node)
         return true
     }
 
@@ -140,7 +208,7 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
         for (elem in allElements) {
             if (elem !in elements) {
                 this.tree[elem.key]?.also { node ->
-                    this.tree.exclude(node)
+                    this.tree.untie(node)
                     anyDeleted = true
                 }
             }
@@ -154,29 +222,23 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
 }
 
 @Suppress("unused")
-class RedBlackTreeSet<E : Comparable<E>> : MutableSet<E> {
-    private class Node<E>(
-        val element: E,
-    ) : BinaryTreeLinksWithColor<Node<E>, AbstractRedBlackTree.Color> {
-        override var parent: Node<E>? = null
-        override var left: Node<E>? = null
-        override var right: Node<E>? = null
-        override lateinit var color: AbstractRedBlackTree.Color
+class LinkedListPriorityQueue<E : Comparable<E>> : PriorityQueue<E> {
+    private class Node<E>(val element: E) : DoublyLinkedListLinks<Node<E>> {
+        override var prev: Node<E>? = null
+        override var next: Node<E>? = null
     }
 
 
-    private val tree = AbstractRedBlackTree<Node<E>, E>(node@{ this@node }, node@{ this@node.element })
+    private val queue = AbstractLinkedListPriorityQueue<Node<E>, E>(
+        node@{ this@node },
+        node@{ this@node.element }
+    )
 
-    override fun add(element: E): Boolean = this.tree.link(Node(element))?.also { old ->
-        this.tree.link(old)
-    } == null
-
-    override fun addAll(elements: Collection<E>): Boolean = elements.map(this::add).any { p -> p }
-
-    override fun clear() = this.tree.clear()
+    override val top: E?
+        get() = this.queue.start?.element
 
     @JvmInline
-    private value class Node2ElementIterator<E : Comparable<E>>(
+    private value class Node2ElementIterator<E>(
         private val original: MutableIterator<Node<E>>
     ) : MutableIterator<E> {
         override fun hasNext(): Boolean = this.original.hasNext()
@@ -185,36 +247,12 @@ class RedBlackTreeSet<E : Comparable<E>> : MutableSet<E> {
 
     }
 
-    override fun iterator(): MutableIterator<E> = Node2ElementIterator(this.tree.iterator())
+    override fun iterator(): MutableIterator<E> = Node2ElementIterator(this.queue.iterator())
 
-    override fun remove(element: E): Boolean {
-        val node = this.tree[element] ?: return false
-        this.tree.exclude(node)
-        return true
+    override fun push(element: E) {
+        this.queue.bind(Node(element))
     }
 
-    override fun removeAll(elements: Collection<E>): Boolean = elements.map(this::remove).any { p -> p }
+    override fun popOrNull(): E? = this.queue.start?.also { start -> this.queue.untie(start) }?.element
 
-    override fun retainAll(elements: Collection<E>): Boolean {
-        val allElements = this.iterator().asSequence().toList()
-        var anyDeleted = false
-        for (elem in allElements) {
-            if (elem !in elements) {
-                this.tree[elem]?.also { node ->
-                    this.tree.exclude(node)
-                    anyDeleted = true
-                }
-            }
-        }
-        return anyDeleted
-    }
-
-    override val size: Int
-        get() = this.tree.size
-
-    override fun contains(element: E): Boolean = element in this.tree
-
-    override fun containsAll(elements: Collection<E>): Boolean = this.map(this::contains).all { p -> p }
-
-    override fun isEmpty(): Boolean = this.tree.isEmpty()
 }

@@ -5,16 +5,16 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
  *
  * @param N тип узла
  */
-interface MutableLinkedCollection<N : Any> {
+interface AbstractMutableLinkedCollection<N : Any> {
     /**
      * Аналог функций `add`, `put`, `push` и т.д.
      *
      * Связывает данный **узел** с коллекцией. Так как целевая коллекция является объединением нескольких более простых,
      * добавление непосредственно элемента (и создание для него нового узла-обёртки внутри этого класса) некорректно
      *
-     * @return старый узел с таким же ключом (все ссылки будут обнулены), если существовал
+     * @return `null` или старый узел, если был заменён новым
      */
-    fun link(node: N): N?
+    fun bind(node: N): N?
 
     /**
      * Аналог функций `pop`, `remove`, `delete` и т.д.
@@ -25,5 +25,5 @@ interface MutableLinkedCollection<N : Any> {
      * ключу) не является обязательным методом для связных структур, то удаление возможно только по узлу
      *
      */
-    fun exclude(node: N)
+    fun untie(node: N)
 }

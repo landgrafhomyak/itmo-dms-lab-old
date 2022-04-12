@@ -11,7 +11,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.collections
  * @see MutableBinaryTreeIterator.addNodeToStack
  */
 class MutableBinaryTreeIterator<N : Any>(
-    private val collection: MutableLinkedCollection<N>,
+    private val collection: AbstractMutableLinkedCollection<N>,
     top: N?,
     private val linksGetter: N.() -> BinaryTreeLinks<N>
 ) : MutableIterator<N> {
@@ -20,7 +20,13 @@ class MutableBinaryTreeIterator<N : Any>(
      * Путь от вершины к узлу который будет возвращён следующим
      */
     private val stack = mutableListOf<N>()
-    lateinit var last: N
+
+    /**
+     * Ссылка на последний возвращённый итератором элемент
+     *
+     * Равна `null` если дерево пустое или итерация не была начата
+     */
+    var last: N? = null
 
     init {
         if (top != null) {
@@ -43,7 +49,8 @@ class MutableBinaryTreeIterator<N : Any>(
 
     override fun next(): N {
         if (this.stack.isEmpty())
-            throw IllegalArgumentException("Все узлы дерева были уже перебраны")
+            @Suppress("SpellCheckingInspection")
+            throw IllegalArgumentException("Итерирование бинарного дерева завершено")
 
         return this.stack.last().also { current ->
             this.stack.removeLast()
@@ -53,6 +60,8 @@ class MutableBinaryTreeIterator<N : Any>(
     }
 
     override fun remove() {
-        this.collection.exclude(this.last)
+        this.collection.untie(
+            this.last ?: throw IllegalArgumentException("Состояние итератора не позволяет удалить элемент из дерева")
+        )
     }
 }

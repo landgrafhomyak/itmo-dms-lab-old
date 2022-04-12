@@ -17,11 +17,14 @@ import kotlin.jvm.JvmName
  * ```
  * @param linksGetter геттер извлекающий [ссылки на связанные узлы и цвет][BinaryTreeLinksWithColor] из данного узла
  * @param keyGetter геттер извлекающий ключ из данного узла
- * @see AbstractRedBlackTree.link
+ * @see AbstractRedBlackTree.bind
+ * @see RedBlackTreeMap
+ * @see RedBlackTreeSet
+ * @see RedBlackTreeSetWithKeyAccess
  */
 class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
     private val linksGetter: N.() -> BinaryTreeLinksWithColor<N, Color>, private val keyGetter: N.() -> K
-) : MutableLinkedCollection<N>, Iterable<N> {
+) : AbstractMutableLinkedCollection<N>, MutableIterable<N> {
     /**
      * Цвета узлов
      */
@@ -40,7 +43,7 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
     /**
      * Вершина дерева
      */
-    private var top: N? = null
+    var top: N? = null
 
     /**
      * Сокращение для поля [BinaryTreeLinksWithColor.parent]
@@ -224,7 +227,7 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
         return null
     }
 
-    override fun link(node: N): N? {
+    override fun bind(node: N): N? {
         node.parent = null
         node.left = null
         node.right = null
@@ -233,7 +236,7 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
         var pointer: N? = this.top ?: run {
             this.top = node
             node.color = Color.BLACK
-            return@link null
+            return@bind null
         }
 
         lateinit var prevPointer: N
@@ -303,7 +306,7 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
         return null
     }
 
-    override fun exclude(node: N) {
+    override fun untie(node: N) {
         if (node.left == null && node.right == null) {
             if (node.parent == null) {
                 this.top = null
@@ -351,11 +354,11 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
             if (this.top === node) {
                 this.top = pointer
             }
-            child ?: return@exclude
+            child ?: return@untie
 
             if (pointer.color == Color.BLACK && child.color == Color.RED) {
                 child.color = Color.BLACK
-                return@exclude
+                return@untie
             }
             return@run child
         }

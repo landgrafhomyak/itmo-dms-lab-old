@@ -35,12 +35,12 @@ internal class AbstractRedBlackTreeTest {
     /**
      * Сокращение для более удобного добавления элементов в дерево
      */
-    private fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.add(element: T) = this@add.link(Node(element))
+    private fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.add(element: T) = this@add.bind(Node(element))
 
     /**
      * Сокращение для более удобного удаления элементов из дерева
      */
-    private fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.pop(element: T) = this@pop.exclude(this@pop[element]!!)
+    private fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.pop(element: T) = this@pop.untie(this@pop[element]!!)
 
     /**
      * В дереве метод [AbstractRedBlackTree.contains] проверяет наличие ключа, а метод [AbstractRedBlackTree.iterator] возвращает узлы.
@@ -81,7 +81,7 @@ internal class AbstractRedBlackTreeTest {
     @Suppress("NothingToInline")
     private inline fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.assertSizeEquals(expected: Int) {
         val actual = this@assertSizeEquals.size
-        assertEquals(expected, this@assertSizeEquals.size, "Размер дерева ($actual) отличается от ожидаемого ($expected)")
+        assertEquals(expected, actual, "Размер дерева ($actual) отличается от ожидаемого ($expected)")
     }
 
     /**
@@ -116,12 +116,12 @@ internal class AbstractRedBlackTreeTest {
     }
 
     /**
-     * Проверяет что дерево корректно заменяет элементы с существующим ключём
+     * Проверяет что дерево корректно заменяет элементы с существующим ключом
      */
     @Test
     fun testDuplications() = this.tree<Int> {
         val node = Node(0)
-        assertSame(null, link(node))
+        assertSame(null, bind(node))
         assertSame(node, add(0))
         assertContentEquals(listOf(0))
     }
@@ -134,6 +134,22 @@ internal class AbstractRedBlackTreeTest {
         add(0)
         pop(0)
         assertContentEquals(listOf())
+    }
+
+    /**
+     * Проверяет что дерево может удалить свой корень
+     */
+    @Test
+    fun testRemoveRoot() = this.tree<Int> {
+        val elements = mutableSetOf(1, -1, 0, 2, -3)
+        for (elem in elements)
+            add(elem)
+
+        while (!this@tree.isEmpty()) {
+            elements.remove(this@tree.top!!.key)
+            untie(this@tree.top!!)
+            assertContentEquals(elements)
+        }
     }
 
     /**
@@ -154,7 +170,7 @@ internal class AbstractRedBlackTreeTest {
     }
 
     /**
-     * Проевряет что дерево может удалять произвольное количество произвольных элементов
+     * Проверяет что дерево может удалять произвольное количество произвольных элементов
      */
     @Test
     fun testRemoveMany() = this.tree<Int> {
@@ -169,6 +185,18 @@ internal class AbstractRedBlackTreeTest {
         pop(-65); elements.remove(-65)
         pop(0); elements.remove(0)
         assertContentEquals(elements)
+    }
+
+    /**
+     * Проверяет что дерево корректно сортирует своё содержимое
+     */
+    @Test
+    fun testSorting() = this.tree<Int> {
+        val elements = mutableSetOf(5, -2, 3, 6, 4, -10, -9, -11, 0, 55, -65, 54, -63, 22, -19)
+        for (elem in elements)
+            add(elem)
+
+        kotlin.test.assertContentEquals(elements.sorted(), this@tree.sorted().map { n -> n.key })
     }
 
 }
