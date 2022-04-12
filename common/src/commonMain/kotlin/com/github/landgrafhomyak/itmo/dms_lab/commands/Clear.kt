@@ -4,20 +4,19 @@ import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
- * Конечный объект команды `show`
- * @see Show.Meta
+ * Конечный объект команды `clear`
+ * @see Meta
  * @sample Meta.help
  */
 @Suppress("unused")
-object Show : BoundCommand(Meta), ApplicableToCollection {
+object Clear : BoundCommand(Meta), ApplicableToCollection {
     object Meta : CommandMeta() {
-        override val id: String = "show"
-        override val help: String = "Выводит все элементы коллекции"
+        override val id: String = "clear"
+        override val help: String = "Очищает коллекцию"
     }
 
     override suspend fun applyTo(logger: Logger, collection: LabWorksCollection) {
-        for (elem in collection) {
-            logger.sendObject(elem)
-        }
+        collection.clear()
+        logger.info("Коллекция очищена")
     }
 }

@@ -6,12 +6,19 @@ import com.github.landgrafhomyak.itmo.dms_lab.collections.BinaryTreeLinksWithCol
 import com.github.landgrafhomyak.itmo.dms_lab.collections.DoublyLinkedListLinks
 import com.github.landgrafhomyak.itmo.dms_lab.collections.PriorityQueue
 import com.github.landgrafhomyak.itmo.dms_lab.collections.RedBlackTreeSetWithKeyAccess
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlin.jvm.JvmInline
 
 /**
  * Коллекция (множество) для хранения лабораторных работ на 11-связном списке
  */
 class LabWorksCollection : Iterable<LabWork> {
+    /**
+     * Дата создания коллекции
+     */
+    var creationDate: Instant = Clock.System.now()
+
     /**
      * Обёртка вокруг элемента коллекции позволяющая ему быть частью нескольких связных структур
      * @property value значение узла
@@ -227,12 +234,15 @@ class LabWorksCollection : Iterable<LabWork> {
 
         /**
          * Удаляет все оставшиеся элементы, удовлетворяющие условию
+         * @return количество элементов, удалённых этой функцией
          */
         @Suppress("unused")
-        fun processRemaining() {
-            @Suppress("ControlFlowWithEmptyBody")
+        fun processRemaining(): ULong {
+            var count = 0uL
             for (work in this@RemoveGreaterThenCoordinateX) {
+                count++
             }
+            return count
         }
     }
 

@@ -44,4 +44,19 @@ data class LabWork(
     }
 
     override fun equals(other: Any?): Boolean = this === other
+
+    /**
+     * Создаёт копию лабораторной работы, не привязанную ни к какой [коллекции][LabWorksCollection]
+     */
+    fun copy() = LabWork(
+        name = this.name,
+        coordinates = this.coordinates,
+        minimalPoint = this.minimalPoint,
+        maximumPoint = this.maximumPoint,
+        personalQualitiesMaximum = this.personalQualitiesMaximum,
+        difficulty = this.difficulty,
+        author = this.author
+    ).also { copied ->
+        copied.creationDate = this.creationDate
+    }
 }

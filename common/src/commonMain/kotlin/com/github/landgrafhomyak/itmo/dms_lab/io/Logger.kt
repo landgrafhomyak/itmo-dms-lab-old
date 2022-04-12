@@ -1,5 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
+import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWork
+
 @Suppress("SpellCheckingInspection")
 /**
  * Логгер
@@ -9,19 +11,19 @@ interface Logger {
      * Передаёт информационное сообщение
      * @param message сообщение
      */
-    fun info(message: String)
+    suspend fun info(message: String)
 
     /**
      * Передаёт предупреждение
      * @param message информация о предупреждении
      */
-    fun warning(message: String)
+    suspend fun warning(message: String)
 
     /**
      * Передаёт ошибку
      * @param message информация об ошибке
      */
-    fun error(message: String)
+    suspend fun error(message: String)
 
 
     /**
@@ -29,5 +31,10 @@ interface Logger {
      * @param level уровень вложенности запроса
      * @param request строка с запросом
      */
-    fun request(level: UInt, request: String)
+    suspend fun request(level: UInt, request: String)
+
+    /**
+     * Пересылает [объект коллекции][LabWork]
+     */
+    suspend fun sendObject(obj: LabWork)
 }
