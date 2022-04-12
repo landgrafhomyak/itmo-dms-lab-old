@@ -1,6 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
-import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptOutput
+import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 import kotlin.jvm.JvmField
 
@@ -21,5 +21,5 @@ sealed class BoundCommand(
      * @param logger логгер для вывода сообщений
      * @param collection коллекция к которой будет применена команда
      */
-    abstract fun applyTo(logger: ScriptOutput, collection: LabWorksCollection)
+    abstract fun applyTo(logger: Logger, collection: LabWorksCollection)
 }

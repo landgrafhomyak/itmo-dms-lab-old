@@ -4,7 +4,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
 /**
  * Логгер
  */
-interface ScriptOutput {
+interface Logger {
     /**
      * Передаёт информационное сообщение
      * @param message сообщение

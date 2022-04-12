@@ -3,9 +3,9 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
 
 /**
  * Печать сообщений в стандартный поток вывода без какого либо форматирования
- * @see RawConsoleScriptInput
+ * @see RawConsoleScriptScanner
  */
-object RawConsoleScriptOutput : ScriptOutput {
+object RawConsoleLogger : Logger {
     override fun info(message: String) {
         println(message)
     }

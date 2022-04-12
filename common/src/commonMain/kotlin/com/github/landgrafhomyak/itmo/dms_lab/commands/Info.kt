@@ -1,6 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
-import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptOutput
+import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
@@ -8,7 +8,7 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
  * @see CommandMeta.INFO
  */
 object Info : BoundCommand(CommandMeta.INFO) {
-    override fun applyTo(logger: ScriptOutput, collection: LabWorksCollection) {
+    override fun applyTo(logger: Logger, collection: LabWorksCollection) {
         TODO()
     }
 }

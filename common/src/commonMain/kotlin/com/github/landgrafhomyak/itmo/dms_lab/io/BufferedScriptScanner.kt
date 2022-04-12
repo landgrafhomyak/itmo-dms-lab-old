@@ -4,7 +4,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
 /**
  * Делает проверку на наличие очередного запроса путём его получения
  */
-abstract class BufferedScriptInput : ScriptInput {
+abstract class BufferedScriptScanner : ScriptScanner {
     //todo make synchronized
     @Suppress("VARIABLE_IN_SINGLETON_WITHOUT_THREAD_LOCAL")
     private var nextLine: String? = null

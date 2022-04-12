@@ -7,7 +7,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
  * @param sources входные потоки для объединения
  */
 @Suppress("unused")
-class CollectScriptInput(private vararg val sources: ScriptInput) : BufferedScriptInput() {
+class CollectScriptScanner(private vararg val sources: ScriptScanner) : BufferedScriptScanner() {
     override fun getNextRequestRaw(): String? {
         for (source in this.sources) {
             if (source.hasNextRequest()) {

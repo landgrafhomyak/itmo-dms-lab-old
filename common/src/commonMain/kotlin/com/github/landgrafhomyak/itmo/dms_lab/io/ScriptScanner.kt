@@ -3,7 +3,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
 /**
  * Предоставляет унифицированный доступ к потокам с запросами к базе данных
  */
-interface ScriptInput : Iterable<String>, Iterator<String> {
+interface ScriptScanner : Iterable<String>, Iterator<String> {
     /**
      * Проверяет на наличие необработанных запросов в потоке
      */
@@ -18,17 +18,17 @@ interface ScriptInput : Iterable<String>, Iterator<String> {
      * Итерирует строки во входном потоке
      */
     override operator fun iterator(): Iterator<String> = iterator {
-        while (this@ScriptInput.hasNextRequest())
-            yield(this@ScriptInput.getNextRequest())
+        while (this@ScriptScanner.hasNextRequest())
+            yield(this@ScriptScanner.getNextRequest())
     }
 
     /**
-     * @see ScriptInput.hasNextRequest
+     * @see ScriptScanner.hasNextRequest
      */
     override operator fun hasNext(): Boolean = this.hasNextRequest()
 
     /**
-     * @see ScriptInput.getNextRequest
+     * @see ScriptScanner.getNextRequest
      */
     override fun next(): String = this.getNextRequest()
 }

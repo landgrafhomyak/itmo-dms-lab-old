@@ -4,7 +4,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
 /**
  * Дублирует сообщения в несколько логгеров
  */
-class SprayScriptOutput(private vararg val outputs: ScriptOutput) : ScriptOutput {
+class SprayLogger(private vararg val outputs: Logger) : Logger {
     override fun info(message: String) {
         for (output in this.outputs) {
             output.info(message)

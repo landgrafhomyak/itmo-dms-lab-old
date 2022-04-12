@@ -1,7 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
 import com.github.landgrafhomyak.itmo.dms_lab.collections.RedBlackTreeSetWithKeyAccess
-import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptOutput
+import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
 import kotlin.jvm.JvmStatic
 
 /**
@@ -12,17 +12,17 @@ enum class CommandMeta {
     HELP {
         override val id: String = "help"
         override val help: String = "Выводит справку по доступным командам"
-        override fun argParse(logger: ScriptOutput, args: Array<String>): Help = Help
+        override fun argParse(logger: Logger, args: Array<String>): Help = Help
     },
     INFO {
         override val id: String = "info"
         override val help: String = "Выводит информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)"
-        override fun argParse(logger: ScriptOutput, args: Array<String>): Info = Info
+        override fun argParse(logger: Logger, args: Array<String>): Info = Info
     },
     SHOW {
         override val id: String = "show"
         override val help: String = "Выводит все элементы коллекции в строковом представлении"
-        override fun argParse(logger: ScriptOutput, args: Array<String>): Show = Show
+        override fun argParse(logger: Logger, args: Array<String>): Show = Show
     },
     ;
 
@@ -43,7 +43,7 @@ enum class CommandMeta {
      * @param args сырые (необработанные) аргументы
      * @return объект команды который можно применить к коллекции
      */
-    abstract fun argParse(logger: ScriptOutput, args: Array<String>): BoundCommand?
+    abstract fun argParse(logger: Logger, args: Array<String>): BoundCommand?
 
     companion object {
         private val id2obj = RedBlackTreeSetWithKeyAccess<String, CommandMeta> { id }.apply buildMap@{
