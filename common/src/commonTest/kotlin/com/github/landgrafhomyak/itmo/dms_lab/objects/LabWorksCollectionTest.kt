@@ -74,9 +74,9 @@ internal class LabWorksCollectionTest {
      */
     @Test
     fun testCheckSorting() = this.collection(
-        LabWork("231", Coordinates(-10, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(0, 15), 50, 0.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(10, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA))
+        LabWork("231", Coordinates(-10, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(0, 15), 50, 0.1, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(10, 15), 50, 10000.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA))
     ) { works ->
         assertContentEquals(works.sortedBy { w -> -w.coordinates.x }, this@collection.descendingByCoordinateX().asSequence().toList())
     }
@@ -86,11 +86,11 @@ internal class LabWorksCollectionTest {
      */
     @Test
     fun testRemovingIfGreaterThenCoordinateX() = this.collection(
-        LabWork("231", Coordinates(6, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(7, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(8, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(9, 15), 50, 0.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(10, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA))
+        LabWork("231", Coordinates(6, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(7, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(8, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(9, 15), 50, 0.1, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(10, 15), 50, 10000.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA))
     ) {
         for (key in arrayOf(8L, 7L, 5L)) {
             for (work in this@collection.removeGreaterThanCoordinateX(key)) {
@@ -105,11 +105,11 @@ internal class LabWorksCollectionTest {
      */
     @Test
     fun testAddingIfGreaterThenCoordinateX() = this.collection(
-        LabWork("231", Coordinates(6, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(7, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(8, 15), 50, -100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(9, 15), 50, 0.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
-        LabWork("231", Coordinates(10, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA))
+        LabWork("231", Coordinates(6, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(7, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(8, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(9, 15), 50, 0.1, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)),
+        LabWork("231", Coordinates(10, 15), 50, 10000.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA))
     ) { works ->
         addIfGreatestCoordinateX(LabWork("231", Coordinates(10, 15), 50, 100.0, 600, Difficulty.INSANE, Person("asdf", 228.0f, EyeColor.BLACK, HairColor.BROWN, Country.CHINA)))
         assertEquals(works.size, this@collection.size)
