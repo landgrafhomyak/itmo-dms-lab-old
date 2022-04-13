@@ -6,7 +6,7 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWork
 /**
  * Логгер
  */
-interface Logger {
+interface Logger : ScriptTransmitter {
     /**
      * Передаёт информационное сообщение
      * @param message сообщение
@@ -24,14 +24,6 @@ interface Logger {
      * @param message информация об ошибке
      */
     suspend fun error(message: String)
-
-
-    /**
-     * Дублирует запрос в выходной поток, если он был передан в не связанном входном потоке
-     * @param level уровень вложенности запроса
-     * @param request строка с запросом
-     */
-    suspend fun request(level: UInt, request: String)
 
     /**
      * Пересылает [объект коллекции][LabWork]
