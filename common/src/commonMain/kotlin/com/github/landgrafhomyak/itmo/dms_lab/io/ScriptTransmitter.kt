@@ -1,6 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundCommand
+import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
 
 /**
  * Передатчик скрипта в поток
@@ -8,9 +8,6 @@ import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundCommand
 interface ScriptTransmitter {
     /**
      * Дублирует запрос в выходной поток, если он был передан в не связанном входном потоке
-     * @param level уровень вложенности запроса
-     * @param request строка с запросом
      */
-    suspend fun request(level: UInt, request: BoundCommand)
-
+    suspend fun request(request: BoundRequest)
 }

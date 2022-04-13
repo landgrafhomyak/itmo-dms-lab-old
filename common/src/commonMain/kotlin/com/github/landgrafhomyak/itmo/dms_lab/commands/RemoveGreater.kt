@@ -4,17 +4,16 @@ import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
- * Конечный объект команды `remove_greater`
+ * Конечный объект запроса `remove_greater`
  * @param key элементы, которые имеют значение больше этого, будут удалены
- * @see Meta
- * @sample Meta.help
+ * @sample RemoveGreater.help
  */
 @Suppress("unused")
 class RemoveGreater(
     @Suppress("MemberVisibilityCanBePrivate")
     val key: Long,
-) : BoundCommand(Meta), ApplicableToCollection {
-    object Meta : CommandMeta() {
+) : BoundRequest(Meta), ApplicableToCollection {
+    companion object Meta : RequestMeta {
         override val id: String = "remove_greater"
         override val help: String = "Удаляет из коллекции все элементы, координата X которых больше заданной"
     }

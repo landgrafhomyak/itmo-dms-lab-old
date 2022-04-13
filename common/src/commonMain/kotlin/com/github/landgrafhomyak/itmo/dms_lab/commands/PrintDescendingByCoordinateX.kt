@@ -5,23 +5,22 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 import kotlin.jvm.JvmField
 
 /**
- * Конечный объект запроса `show`
- * @sample Show.help
+ * Конечный объект запроса `print_descending`
+ * @sample PrintDescendingByCoordinateX.help
  */
 @Suppress("unused")
-object Show : BoundRequest(Show), ApplicableToCollection, RequestMeta {
+object PrintDescendingByCoordinateX : BoundRequest(PrintDescendingByCoordinateX), ApplicableToCollection, RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
 
-
-    override val id: String = "show"
-    override val help: String = "Выводит все элементы коллекции"
+    override val id: String = "print_descending"
+    override val help: String = "Выводит все элементы коллекции в порядке убывания по координате X"
 
     override suspend fun applyTo(logger: Logger, collection: LabWorksCollection) {
-        for (elem in collection) {
+        for (elem in collection.descendingByCoordinateX()) {
             logger.sendObject(elem)
         }
     }

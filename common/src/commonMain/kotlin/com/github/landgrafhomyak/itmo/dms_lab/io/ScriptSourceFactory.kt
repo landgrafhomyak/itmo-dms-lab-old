@@ -1,7 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
 /**
- * Конструктор потока с командами для скрипта
+ * Конструктор потока с запросами для скрипта
  */
 @Suppress("unused")
 interface ScriptSourceFactory {

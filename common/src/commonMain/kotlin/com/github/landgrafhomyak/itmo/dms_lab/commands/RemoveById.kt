@@ -5,17 +5,16 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorkId
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
- * Конечный объект команды `remove_by_id`
+ * Конечный объект запроса `remove_by_id`
  * @param id идентификатор элемента, который надо удалить
- * @see Meta
- * @sample Meta.help
+ * @sample RemoveById.help
  */
 @Suppress("unused")
 class RemoveById(
     @Suppress("MemberVisibilityCanBePrivate")
     val id: LabWorkId,
-) : BoundCommand(Meta), ApplicableToCollection {
-    object Meta : CommandMeta() {
+) : BoundRequest(Meta), ApplicableToCollection {
+    companion object Meta : RequestMeta {
         override val id: String = "remove_by_id"
         override val help: String = "Удаляет элемент из коллекции по его идентификатору"
     }

@@ -1,21 +1,25 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
 import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
+import kotlin.jvm.JvmField
 
 /**
- * Конечный объект команды `help`
- * @see Meta
- * @sample Meta.help
+ * Конечный объект запроса `help`
+ * @sample Help.help
  */
 @Suppress("unused")
-object Help : BoundCommand(Meta) {
-    object Meta : CommandMeta() {
-        override val id: String = "help"
-        override val help: String = "Выводит справку по доступным командам"
-    }
+object Help : BoundRequest(Help), RequestMeta {
+    /**
+     * Поле для совместимости с запросами которые имеют аргументы
+     */
+    @JvmField
+    val Meta: RequestMeta = this
+
+    override val id: String = "help"
+    override val help: String = "Выводит справку по доступным запросам"
 
     @Suppress("MemberVisibilityCanBePrivate", "unused")
-    suspend fun print(logger: Logger, commands: Iterable<CommandMeta>) {
+    suspend fun print(logger: Logger, commands: Iterable<RequestMeta>) {
         val idMaxSize = commands.maxOf { cmd -> cmd.id.length }
         commands.joinToString(separator = "\n") { cmd ->
             "${cmd.id.padEnd(idMaxSize, ' ')} - ${cmd.help}"

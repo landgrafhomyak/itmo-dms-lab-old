@@ -3,16 +3,16 @@
 
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundCommand
+import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 /**
- * Считывает одну команду и применяет к ней функцию
+ * Считывает один запрос и применяет к ней функцию
  */
 @Suppress("unused")
-suspend inline fun ScriptSource.fetch(proc: (BoundCommand) -> Unit) {
+suspend inline fun ScriptSource.fetch(proc: (BoundRequest) -> Unit) {
     contract {
         callsInPlace(proc, InvocationKind.AT_MOST_ONCE)
     }
@@ -20,10 +20,10 @@ suspend inline fun ScriptSource.fetch(proc: (BoundCommand) -> Unit) {
 }
 
 /**
- * Считывает команды в цикле до тех пор, пока поток не будет закрыт или функция не вернёт `null`
+ * Считывает запросы в цикле до тех пор, пока поток не будет закрыт или функция не вернёт `null`
  */
 @Suppress("unused")
-suspend inline fun ScriptSource.fetching(proc: (BoundCommand) -> Unit?) {
+suspend inline fun ScriptSource.fetching(proc: (BoundRequest) -> Unit?) {
     contract {
         callsInPlace(proc, InvocationKind.UNKNOWN)
     }
@@ -55,21 +55,4 @@ suspend inline fun LogReceiver.fetching(proc: (Message) -> Unit?) {
     while (true) {
         (this.fetch() ?: break).let(proc) ?: break
     }
-}
-
-/**
- * Отправляет [упакованное][Message] сообщение
- * @see Logger.info
- * @see Logger.warning
- * @see Logger.error
- * @see Logger.request
- * @see Logger.sendObject
- */
-@Suppress("unused")
-suspend inline fun Logger.send(message: Message) = when (message) {
-    is Message.Error   -> this.error(message.message)
-    is Message.Info    -> this.info(message.message)
-    is Message.Object  -> this.sendObject(message.work)
-    is Message.Request -> this.request(message.level, message.command)
-    is Message.Warning -> this.warning(message.message)
 }

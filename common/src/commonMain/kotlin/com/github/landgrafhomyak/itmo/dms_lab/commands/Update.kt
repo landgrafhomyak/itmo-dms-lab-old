@@ -6,11 +6,10 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorkId
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
- * Конечный объект команды `add`
+ * Конечный объект запроса `add`
  * @param id идентификатор элемента, который надо заменить
  * @param factory элемент, копии которого будут добавляться в коллекцию
- * @see Meta
- * @sample Meta.help
+ * @sample Update.help
  */
 @Suppress("unused")
 class Update(
@@ -18,8 +17,8 @@ class Update(
     val id: LabWorkId,
     @Suppress("MemberVisibilityCanBePrivate")
     val factory: LabWork
-) : BoundCommand(Meta), ApplicableToCollection {
-    object Meta : CommandMeta() {
+) : BoundRequest(Meta), ApplicableToCollection {
+    companion object Meta : RequestMeta {
         override val id: String = "update"
         override val help: String = "Обновляет значение элемента коллекции, идентификатор которого равен заданному"
     }

@@ -1,6 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundCommand
+import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWork
 
 /**
@@ -27,7 +27,7 @@ sealed class Message {
     /**
      * @see Logger.request
      */
-    class Request(val level: UInt, val command: BoundCommand) : Message()
+    class Request(val level: UInt, val command: BoundRequest) : Message()
 
     /**
      * @see Logger.sendObject

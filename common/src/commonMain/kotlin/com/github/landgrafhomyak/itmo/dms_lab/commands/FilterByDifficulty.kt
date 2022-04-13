@@ -5,17 +5,16 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.Difficulty
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
- * Конечный объект команды `filter_by_difficulty`
+ * Конечный объект запроса `filter_by_difficulty`
  * @param difficulty ключ, по которому будут выбраны элементы
- * @see Meta
- * @sample Meta.help
+ * @sample FilterByDifficulty.help
  */
 @Suppress("unused")
 class FilterByDifficulty(
     @Suppress("MemberVisibilityCanBePrivate")
     val difficulty: Difficulty,
-) : BoundCommand(Meta), ApplicableToCollection {
-    object Meta : CommandMeta() {
+) : BoundRequest(Meta), ApplicableToCollection {
+    companion object Meta : RequestMeta {
         override val id: String = "filter_by_difficulty"
         override val help: String = "Выводит элементы, значение поля difficulty которых равно заданному"
     }

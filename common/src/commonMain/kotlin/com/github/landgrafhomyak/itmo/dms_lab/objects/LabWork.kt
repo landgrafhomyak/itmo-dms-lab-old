@@ -26,6 +26,7 @@ data class LabWork(
     /**
      * Дата создания объекта. Может быть перезаписано при чтении из внешней базы данных
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     var creationDate: Instant = Clock.System.now()
 
     /**
@@ -42,8 +43,6 @@ data class LabWork(
         if (this.maximumPoint <= 0) throw IllegalArgumentException("Максимальная точка должна быть строго положительной")
         if (this.personalQualitiesMaximum <= 0) throw IllegalArgumentException("Показатель личных качеств должен быть строго положительной")
     }
-
-    override fun equals(other: Any?): Boolean = this === other
 
     /**
      * Создаёт копию лабораторной работы, не привязанную ни к какой [коллекции][LabWorksCollection]

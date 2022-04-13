@@ -5,17 +5,16 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWork
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
 
 /**
- * Конечный объект команды `add_if_max`
+ * Конечный объект запроса `add_if_max`
  * @param factory элемент, копии которого будут добавляться в коллекцию
- * @see Meta
- * @sample Meta.help
+ * @sample AddIfMax.help
  */
 @Suppress("unused")
 class AddIfMax(
     @Suppress("MemberVisibilityCanBePrivate")
     val factory: LabWork
-) : BoundCommand(Meta), ApplicableToCollection {
-    object Meta : CommandMeta() {
+) : BoundRequest(Meta), ApplicableToCollection {
+    companion object Meta : RequestMeta {
         override val id: String = "add"
         override val help: String = "Добавляет новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции по координате X"
     }

@@ -3,17 +3,20 @@ package com.github.landgrafhomyak.itmo.dms_lab.commands
 import kotlin.jvm.JvmField
 
 /**
- * Конечный объект запроса `exit`
- * @sample Exit.help
+ * Пустая запрос
+ * @see Meta
+ * @sample Empty.help
  */
 @Suppress("unused")
-object Exit : BoundRequest(Exit), RequestMeta {
+object Empty : BoundRequest(Empty), RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
 
-    override val id: String = "exit"
-    override val help: String = "Завершает скрипт"
+
+    override val id: String = ""
+    override val help: String = "Пустой запрос"
+
 }

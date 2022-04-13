@@ -1,6 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundCommand
+import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWork
 
 @Suppress("SpellCheckingInspection", "unused")
@@ -26,7 +26,7 @@ class SprayLogger(private vararg val outputs: Logger) : Logger {
         }
     }
 
-    override suspend fun request(level: UInt, request: BoundCommand) {
+    override suspend fun request(level: UInt, request: BoundRequest) {
         for (output in this.outputs) {
             output.request(level, request)
         }
