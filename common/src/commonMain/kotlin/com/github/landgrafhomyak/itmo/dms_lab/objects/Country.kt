@@ -7,9 +7,9 @@ package com.github.landgrafhomyak.itmo.dms_lab.objects
 @Suppress("unused")
 enum class Country {
     /**
-     * Соединённые Штаты Америки
+     * Россия
      */
-    USA,
+    RUSSIA,
 
     /**
      * Германия

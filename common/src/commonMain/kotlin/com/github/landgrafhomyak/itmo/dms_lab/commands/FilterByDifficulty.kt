@@ -9,11 +9,14 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
  * @param difficulty ключ, по которому будут выбраны элементы
  * @sample FilterByDifficulty.help
  */
-@Suppress("unused")
+@Suppress("unused", "EqualsOrHashCode")
 class FilterByDifficulty(
     @Suppress("MemberVisibilityCanBePrivate")
     val difficulty: Difficulty,
-) : BoundRequest(Meta), ApplicableToCollection {
+) : BoundRequest(), ApplicableToCollection {
+    override val meta: RequestMeta
+        get() = Meta
+
     companion object Meta : RequestMeta {
         override val id: String = "filter_by_difficulty"
         override val help: String = "Выводит элементы, значение поля difficulty которых равно заданному"
@@ -24,4 +27,14 @@ class FilterByDifficulty(
             logger.sendObject(elem)
         }
     }
+
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean {
+        if (other !is FilterByDifficulty) return false
+        return this.difficulty == other.difficulty
+    }
+
+    override fun hashCode(): Int = this.difficulty.hashCode()
 }

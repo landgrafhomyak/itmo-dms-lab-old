@@ -1,6 +1,5 @@
 package com.github.landgrafhomyak.itmo.dms_lab.commands
 
-import kotlin.jvm.JvmField
 
 @Suppress("SpellCheckingInspection")
 /**
@@ -10,7 +9,15 @@ import kotlin.jvm.JvmField
  * @property meta ссылка на метаобъект
  * @see ApplicableToCollection
  */
-abstract class BoundRequest(
-    @JvmField
-    val meta: RequestMeta
-)
+abstract class BoundRequest {
+    abstract val meta: RequestMeta
+
+    override fun equals(other: Any?): Boolean = if (other is BoundRequest) this.equals(other) else false
+
+    /**
+     * Сравнивает два запроса на идентичность
+     */
+    abstract fun equals(other: BoundRequest): Boolean
+
+    abstract override fun hashCode(): Int
+}

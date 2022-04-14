@@ -9,12 +9,15 @@ import kotlin.jvm.JvmField
  * @sample Clear.help
  */
 @Suppress("unused")
-object Clear : BoundRequest(Clear), ApplicableToCollection, RequestMeta {
+object Clear : BoundRequest(), ApplicableToCollection, RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
+
+    override val meta: RequestMeta
+        get() = this
 
     override val id: String = "clear"
     override val help: String = "Очищает коллекцию"
@@ -23,4 +26,10 @@ object Clear : BoundRequest(Clear), ApplicableToCollection, RequestMeta {
         collection.clear()
         logger.info("Коллекция очищена")
     }
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean = this === other
+
+    override fun hashCode(): Int = super.hashCode()
 }

@@ -11,17 +11,21 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
  * @param factory элемент, копии которого будут добавляться в коллекцию
  * @sample Update.help
  */
-@Suppress("unused")
+@Suppress("unused", "EqualsOrHashCode")
 class Update(
     @Suppress("MemberVisibilityCanBePrivate")
     val id: LabWorkId,
     @Suppress("MemberVisibilityCanBePrivate")
     val factory: LabWork
-) : BoundRequest(Meta), ApplicableToCollection {
+) : BoundRequest(), ApplicableToCollection {
+    override val meta: RequestMeta
+        get() = Meta
+
     companion object Meta : RequestMeta {
         override val id: String = "update"
         override val help: String = "Обновляет значение элемента коллекции, идентификатор которого равен заданному"
     }
+
 
     override suspend fun applyTo(logger: Logger, collection: LabWorksCollection) {
         if (collection.update(this.id, this.factory.copy()) != null) {
@@ -30,4 +34,13 @@ class Update(
             logger.error("Элемента с идентификатором $id нет в коллекции, нечего обновлять")
         }
     }
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean {
+        if (other !is Update) return false
+        return this.id == other.id && this.factory == other.factory
+    }
+
+    override fun hashCode(): Int = this.factory.hashCode()
 }

@@ -9,11 +9,14 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
  * @param factory элемент, копии которого будут добавляться в коллекцию
  * @sample AddIfMax.help
  */
-@Suppress("unused")
+@Suppress("unused", "EqualsOrHashCode")
 class AddIfMax(
     @Suppress("MemberVisibilityCanBePrivate")
     val factory: LabWork
-) : BoundRequest(Meta), ApplicableToCollection {
+) : BoundRequest(), ApplicableToCollection {
+    override val meta: RequestMeta
+        get() = Meta
+
     companion object Meta : RequestMeta {
         override val id: String = "add"
         override val help: String = "Добавляет новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции по координате X"
@@ -26,4 +29,13 @@ class AddIfMax(
             logger.info("Элемент не был добавлен")
         }
     }
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean {
+        if (other !is AddIfMax) return false
+        return this.factory == other.factory
+    }
+
+    override fun hashCode(): Int = this.factory.hashCode()
 }

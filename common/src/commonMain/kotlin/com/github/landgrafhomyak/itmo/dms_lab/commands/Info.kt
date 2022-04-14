@@ -9,13 +9,14 @@ import kotlin.jvm.JvmField
  * @sample Info.help
  */
 @Suppress("unused")
-object Info : BoundRequest(Info), ApplicableToCollection, RequestMeta {
+object Info : BoundRequest(), ApplicableToCollection, RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
-
+    override val meta: RequestMeta
+        get() = Info
     override val id: String = "info"
     override val help: String = "Выводит информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)"
 
@@ -24,4 +25,10 @@ object Info : BoundRequest(Info), ApplicableToCollection, RequestMeta {
             "Коллекция лабораторных работ была создана ${collection.creationDate} и имеет ${collection.size}"
         )
     }
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean = this === other
+
+    override fun hashCode(): Int = super.hashCode()
 }

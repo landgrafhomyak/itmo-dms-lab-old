@@ -175,6 +175,7 @@ class LabWorksCollection : Iterable<LabWork> {
      * _Сложность: O(log N)_
      * @return возвращает лабораторную работу, которая была обновлена, иначе `null`
      */
+    @Suppress("NOTHING_TO_INLINE")
     inline operator fun set(id: LabWorkId, work: LabWork) = this.update(id, work)
 
     /**

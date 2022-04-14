@@ -9,12 +9,14 @@ import kotlin.jvm.JvmField
  * @sample PrintFieldDescendingMaximumPoint.help
  */
 @Suppress("unused")
-object PrintFieldDescendingMaximumPoint : BoundRequest(PrintFieldDescendingMaximumPoint), ApplicableToCollection, RequestMeta {
+object PrintFieldDescendingMaximumPoint : BoundRequest(), ApplicableToCollection, RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
+    override val meta: RequestMeta
+        get() = PrintFieldDescendingMaximumPoint
 
     override val id: String = "print_field_descending_maximum_point"
     override val help: String = "Выводит все элементы коллекции в порядке убывания по максимальной точке"
@@ -24,4 +26,10 @@ object PrintFieldDescendingMaximumPoint : BoundRequest(PrintFieldDescendingMaxim
             logger.sendObject(elem)
         }
     }
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean = this === other
+
+    override fun hashCode(): Int = super.hashCode()
 }

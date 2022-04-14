@@ -7,13 +7,22 @@ import kotlin.jvm.JvmField
  * @sample History.help
  */
 @Suppress("unused")
-object History : BoundRequest(History), RequestMeta {
+object History : BoundRequest(), RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
 
+    override val meta: RequestMeta
+        get() = this
+
     override val id: String = "help"
     override val help: String = "Выводит последние 10 запросов"
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean = this === other
+
+    override fun hashCode(): Int = super.hashCode()
 }

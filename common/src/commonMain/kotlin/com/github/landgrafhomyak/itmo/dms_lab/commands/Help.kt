@@ -8,12 +8,15 @@ import kotlin.jvm.JvmField
  * @sample Help.help
  */
 @Suppress("unused")
-object Help : BoundRequest(Help), RequestMeta {
+object Help : BoundRequest(), RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
+
+    override val meta: RequestMeta
+        get() = Help
 
     override val id: String = "help"
     override val help: String = "Выводит справку по доступным запросам"
@@ -27,4 +30,9 @@ object Help : BoundRequest(Help), RequestMeta {
             logger.info(s)
         }
     }
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean = this === other
+
+    override fun hashCode(): Int = super.hashCode()
 }

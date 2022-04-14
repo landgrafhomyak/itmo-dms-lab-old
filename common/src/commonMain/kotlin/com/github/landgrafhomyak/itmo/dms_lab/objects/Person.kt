@@ -11,13 +11,13 @@ package com.github.landgrafhomyak.itmo.dms_lab.objects
 @Suppress("KDocUnresolvedReference", "unused")
 data class Person(
     val name: String,
-    val weight: Float, // Значение поля должно быть больше 0
+    val weight: Float,
     val eyeColor: EyeColor,
     val hairColor: HairColor,
     val nationality: Country,
 ) {
     init {
-        if (this.name.isBlank()) throw IllegalArgumentException("Имя автора должно быть непустым")
-        if (this.weight <= 0) throw IllegalArgumentException("Вес автора должен быть строго положительным")
+        if (this.name.isBlank()) throw FailedCreateObjectException("Имя автора должно быть непустым")
+        if (this.weight <= 0) throw FailedCreateObjectException("Вес автора должен быть строго положительным")
     }
 }

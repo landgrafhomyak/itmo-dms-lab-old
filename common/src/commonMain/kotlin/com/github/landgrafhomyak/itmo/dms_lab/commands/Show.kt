@@ -9,13 +9,15 @@ import kotlin.jvm.JvmField
  * @sample Show.help
  */
 @Suppress("unused")
-object Show : BoundRequest(Show), ApplicableToCollection, RequestMeta {
+object Show : BoundRequest(), ApplicableToCollection, RequestMeta {
     /**
      * Поле для совместимости с запросами которые имеют аргументы
      */
     @JvmField
     val Meta: RequestMeta = this
 
+    override val meta: RequestMeta
+        get() = Show
 
     override val id: String = "show"
     override val help: String = "Выводит все элементы коллекции"
@@ -25,4 +27,10 @@ object Show : BoundRequest(Show), ApplicableToCollection, RequestMeta {
             logger.sendObject(elem)
         }
     }
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean = this === other
+
+    override fun hashCode(): Int = super.hashCode()
 }

@@ -11,6 +11,6 @@ data class Coordinates(
     val y: Long
 ) {
     init {
-        if (this.y > 116) throw IllegalArgumentException("Координата y должна быть меньше 116")
+        if (this.y > 116) throw FailedCreateObjectException("Координата y должна быть меньше 116")
     }
 }

@@ -38,10 +38,10 @@ data class LabWork(
         internal set
 
     init {
-        if (this.name.isBlank()) throw IllegalArgumentException("Название лабораторной работы должно быть непустым")
-        if (this.minimalPoint <= 0) throw IllegalArgumentException("Минимальная точка должна быть строго положительной")
-        if (this.maximumPoint <= 0) throw IllegalArgumentException("Максимальная точка должна быть строго положительной")
-        if (this.personalQualitiesMaximum <= 0) throw IllegalArgumentException("Показатель личных качеств должен быть строго положительной")
+        if (this.name.isBlank()) throw FailedCreateObjectException("Название лабораторной работы должно быть непустым")
+        if (this.minimalPoint <= 0) throw FailedCreateObjectException("Минимальная точка должна быть строго положительной")
+        if (this.maximumPoint <= 0) throw FailedCreateObjectException("Максимальная точка должна быть строго положительной")
+        if (this.personalQualitiesMaximum <= 0) throw FailedCreateObjectException("Показатель личных качеств должен быть строго положительной")
     }
 
     /**

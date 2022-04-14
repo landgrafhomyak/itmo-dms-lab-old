@@ -9,11 +9,14 @@ import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorksCollection
  * @param id идентификатор элемента, который надо удалить
  * @sample RemoveById.help
  */
-@Suppress("unused")
+@Suppress("unused", "EqualsOrHashCode")
 class RemoveById(
     @Suppress("MemberVisibilityCanBePrivate")
     val id: LabWorkId,
-) : BoundRequest(Meta), ApplicableToCollection {
+) : BoundRequest(), ApplicableToCollection {
+    override val meta: RequestMeta
+        get() = Meta
+
     companion object Meta : RequestMeta {
         override val id: String = "remove_by_id"
         override val help: String = "Удаляет элемент из коллекции по его идентификатору"
@@ -26,4 +29,14 @@ class RemoveById(
             logger.error("Элемента с идентификатором $id нет в коллекции, нечего удалять")
         }
     }
+
+
+
+    @Suppress("CovariantEquals")
+    override fun equals(other: BoundRequest): Boolean {
+        if (other !is RemoveById) return false
+        return this.id == other.id
+    }
+
+    override fun hashCode(): Int = this.id.hashCode()
 }
