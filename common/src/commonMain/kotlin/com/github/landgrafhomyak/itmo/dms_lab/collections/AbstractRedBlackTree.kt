@@ -426,7 +426,7 @@ class AbstractRedBlackTree<N : Any, K : Comparable<K>>(
     @Suppress("unused")
     fun isNotEmpty(): Boolean = this.top != null
 
-    @Suppress("DuplicatedCode", "NothingToInline")
+    @Suppress("DuplicatedCode", "NOTHING_TO_INLINE")
     private inline fun mutableSortedIterator(): MutableIterator<N> = MutableBinaryTreeIterator(this, this.top, this.linksGetter)
 
     @Suppress("MemberVisibilityCanBePrivate")

@@ -49,6 +49,7 @@ object StringCommandParser {
         }
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     inline fun parseId(raw: String): LabWorkId? = raw.toLabWorkIdOrNull()
 
 

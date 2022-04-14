@@ -114,13 +114,14 @@ class ObjectParser private constructor(
     private var inString = false
     private val out: Map<String, Value>
 
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun pushString(pos: Int) {
         val node = this.stack.top
         this.stack.top.values[node.lastKey!!.also { node.lastKey = null }] = this.wrap(
             raw.slice(IntRangeWithExclude(excludeIndexes, startPos, pos))
         )
     }
-
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun popStack(pos: Int) {
         val values = this.stack.pop().values
         if (this.stack.isEmpty())
@@ -133,6 +134,7 @@ class ObjectParser private constructor(
         this.startPos = pos + 1
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun pushStack() {
         this.stack.push(ObjectParserStackNode(RedBlackTreeMap()))
     }

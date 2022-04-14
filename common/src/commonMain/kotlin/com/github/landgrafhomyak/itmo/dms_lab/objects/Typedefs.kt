@@ -5,11 +5,11 @@ package com.github.landgrafhomyak.itmo.dms_lab.objects
  */
 typealias LabWorkId = Long
 
-@Suppress("unused")
+@Suppress("unused", "NOTHING_TO_INLINE")
 inline fun String.toLabWorkIdOrNull(): LabWorkId? = this.toLongOrNull()
 
-@Suppress("unused")
+@Suppress("unused", "NOTHING_TO_INLINE")
 inline fun String.toLabWorkId(): LabWorkId = this.toLong()
 
-@Suppress("unused")
+@Suppress("unused", "NOTHING_TO_INLINE")
 inline fun Number.toLabWorkId(): LabWorkId = this.toLong()

@@ -20,7 +20,7 @@ abstract class PriorityQueueAbstractTest {
      * Проверяет что все элементы коллекции содержатся в дереве
      */
     @JvmName("assertContentEquals2")
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     protected inline fun <T : Comparable<T>> assertContentEquals(tree: PriorityQueue<T>, elements: Iterable<T>) {
         @Suppress("NAME_SHADOWING")
         val elements = elements.toSet()
@@ -32,7 +32,7 @@ abstract class PriorityQueueAbstractTest {
      * Сокращение функции [PriorityQueueAbstractTest.assertContentEquals] для использования внутри блока [PriorityQueueAbstractTest.queue]
      */
     @JvmName("assertContentEquals1")
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     protected inline fun <T : Comparable<T>> PriorityQueue<T>.assertContentEquals(elements: Iterable<T>) {
         this@PriorityQueueAbstractTest.assertContentEquals(this@assertContentEquals, elements)
     }
@@ -40,7 +40,7 @@ abstract class PriorityQueueAbstractTest {
     /**
      * Сокращение функции [kotlin.test.assertEquals] для проверки размера дерева внутри блока [PriorityQueueAbstractTest.queue]
      */
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     protected inline fun <T : Comparable<T>> PriorityQueue<T>.assertSizeEquals(expected: Int) {
         @Suppress("RedundantAsSequence")
         val actual = this@assertSizeEquals.asSequence().count()

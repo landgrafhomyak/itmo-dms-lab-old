@@ -47,7 +47,7 @@ internal class AbstractRedBlackTreeTest {
      * Поэтому [kotlin.test.assertContains] стандартной библиотеки не может правильно определить типы, а интерфейса [`Container`](https://docs.python.org/3/library/collections.abc.html#collections.abc.Container)
      * в Java (а следовательно и в Kotlin) не завезли
      */
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun <T : Comparable<T>> assertContains(tree: AbstractRedBlackTree<Node<T>, T>, element: T, message: String? = null) {
         assertTrue(element in tree, message)
     }
@@ -56,7 +56,7 @@ internal class AbstractRedBlackTreeTest {
      * Аналогично методу [AbstractRedBlackTreeTest.assertContains] проверяет что все элементы коллекции содержатся в дереве
      */
     @JvmName("assertContentEquals2")
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun <T : Comparable<T>> assertContentEquals(tree: AbstractRedBlackTree<Node<T>, T>, elements: Iterable<T>) {
         @Suppress("NAME_SHADOWING")
         val elements = elements.toList()
@@ -70,7 +70,7 @@ internal class AbstractRedBlackTreeTest {
      * Сокращение функции [AbstractRedBlackTreeTest.assertContentEquals] для использования внутри блока [AbstractRedBlackTreeTest.tree]
      */
     @JvmName("assertContentEquals1")
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.assertContentEquals(elements: Iterable<T>) {
         this@AbstractRedBlackTreeTest.assertContentEquals(this@assertContentEquals, elements)
     }
@@ -78,7 +78,7 @@ internal class AbstractRedBlackTreeTest {
     /**
      * Сокращение функции [kotlin.test.assertEquals] для проверки размера дерева внутри блока [AbstractRedBlackTreeTest.tree]
      */
-    @Suppress("NothingToInline")
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun <T : Comparable<T>> AbstractRedBlackTree<Node<T>, T>.assertSizeEquals(expected: Int) {
         val actual = this@assertSizeEquals.size
         assertEquals(expected, actual, "Размер дерева ($actual) отличается от ожидаемого ($expected)")

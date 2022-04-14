@@ -1,4 +1,4 @@
-@file:Suppress("NothingToInline")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.github.landgrafhomyak.itmo.dms_lab.collections
 
