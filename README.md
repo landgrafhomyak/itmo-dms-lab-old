@@ -1,6 +1,14 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.6.20-blue.svg)](http://kotlinlang.org)
 [![Tests](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/test.yml/badge.svg)](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/test.yml)
 [![](https://jitpack.io/v/landgrafhomyak/itmo-dms-lab.svg)](https://jitpack.io/#landgrafhomyak/itmo-dms-lab)
+
+[![Kotlin/MPP](https://img.shields.io/badge/Kotlin/MPP-7F52FF.svg)](https://kotlinlang.org/docs/multiplatform.html)
+[![Kotlin/JVM](https://img.shields.io/badge/Kotlin/JVM-7F52FF.svg)](https://kotlinlang.org/docs/jvm-get-started.html)
+<!--
+[![Kotlin/Native](https://img.shields.io/badge/Kotlin/Native-7F52FF.svg)](https://kotlinlang.org/docs/native-get-started.html)
+[![Kotlin/JS](https://img.shields.io/badge/Kotlin/JS-7F52FF.svg)](https://kotlinlang.org/docs/js-get-started.html)
+-->
+
 # Лабораторные работы №5-8 по программированию на факультете программной инженерии и компьютерной техники в [ИТМО](http://itmo.ru)
 
 > **Запрещается продажа и/или использование данного кода для получения зачёта путём сдачи практику**

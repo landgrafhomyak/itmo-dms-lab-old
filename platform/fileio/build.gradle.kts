@@ -13,10 +13,15 @@ kotlin {
             kotlinOptions.jvmTarget = "1.8"
         }
     }
-    js(BOTH) {
-        browser {}
+    /*
+    js("nodejs", BOTH) {
         nodejs {}
     }
+    @Suppress("SpellCheckingInspection")
+    js("webjs", BOTH) {
+        browser {}
+    }
+    */
 
     val hostOs = System.getProperty("os.name")
 
@@ -28,11 +33,11 @@ kotlin {
         else                         -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
+
     @Suppress("UNUSED_VARIABLE")
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":common"))
             }
         }
         val commonTest by getting {
@@ -42,9 +47,22 @@ kotlin {
         }
         val jvmMain by getting
         val jvmTest by getting
-        val jsMain by getting
-        val jsTest by getting
+        /*
+        val nodejsMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-io-jvm:0.1.1")
+            }
+        }
+        val nodejsTest by getting
+
+        @Suppress("SpellCheckingInspection")
+        val webjsMain by getting
+
+        @Suppress("SpellCheckingInspection")
+        val webjsTest by getting
+        */
         val nativeMain by getting
         val nativeTest by getting
+
     }
 }

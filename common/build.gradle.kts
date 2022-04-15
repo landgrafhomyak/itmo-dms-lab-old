@@ -13,10 +13,9 @@ kotlin {
             kotlinOptions.jvmTarget = "1.8"
         }
     }
-    js(BOTH) {
-        browser {
-            commonWebpackConfig {}
-        }
+    js( BOTH) {
+        nodejs {}
+        browser {}
     }
     val hostOs = System.getProperty("os.name")
 
