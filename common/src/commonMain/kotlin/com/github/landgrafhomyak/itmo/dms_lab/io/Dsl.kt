@@ -3,7 +3,7 @@
 
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
+import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

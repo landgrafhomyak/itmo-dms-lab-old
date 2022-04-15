@@ -2,7 +2,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.io
 
 import com.github.landgrafhomyak.itmo.dms_lab.collections.LinkedQueue
 import com.github.landgrafhomyak.itmo.dms_lab.collections.Queue
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
+import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWork
 import kotlinx.coroutines.yield
 

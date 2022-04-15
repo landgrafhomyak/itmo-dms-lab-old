@@ -1,6 +1,6 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
-import com.github.landgrafhomyak.itmo.dms_lab.commands.BoundRequest
+import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 
 /**
  * Предоставляет унифицированный доступ к потокам с запросами к базе данных

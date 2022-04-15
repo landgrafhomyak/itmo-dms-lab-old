@@ -58,4 +58,18 @@ data class LabWork(
     ).also { copied ->
         copied.creationDate = this.creationDate
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is LabWork) return false
+
+        return (
+                this.name == other.name &&
+                this.coordinates == other.coordinates &&
+                this.minimalPoint == other.minimalPoint &&
+                this.maximumPoint == other.maximumPoint &&
+                this.personalQualitiesMaximum == other.personalQualitiesMaximum &&
+                this.difficulty == other.difficulty &&
+                this.author == other.author
+               )
+    }
 }
