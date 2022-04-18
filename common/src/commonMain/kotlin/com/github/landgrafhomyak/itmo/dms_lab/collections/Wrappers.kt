@@ -220,7 +220,7 @@ class RedBlackTreeSetWithKeyAccess<K : Comparable<K>, E : Any>(
     override val keys: Set<K>
         get() = this.tree.map { node -> node.key }.toSet()
     override val values: Collection<E>
-        get() = this.tree.map { node -> node.element }
+        get() = this
 
     override fun add(element: E): Boolean = this.tree.bind(this.Node(element)) != null
 

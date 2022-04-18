@@ -81,52 +81,30 @@ class LabWorkFactoryFromDynamicAndString(map: Map<String, Value>) : Factory<LabW
          */
         // @JvmStatic
         @Suppress("NOTHING_TO_INLINE")
-        inline fun parseDifficulty(raw: String): Difficulty = when (raw) {
-            "HARD"     -> Difficulty.HARD
-            "INSANE"   -> Difficulty.INSANE
-            "TERRIBLE" -> Difficulty.TERRIBLE
-            else       -> throw FailedCreateObjectException("Неизвестная сложность")
-        }
+        inline fun parseDifficulty(raw: String): Difficulty = Difficulty[raw] ?: throw FailedCreateObjectException("Неизвестная сложность")
+
 
         /**
          * Парсит значение [EyeColor] из строки
          */
         // @JvmStatic
         @Suppress("NOTHING_TO_INLINE")
-        inline fun parseEyeColor(raw: String): EyeColor = when (raw) {
-            "BLACK"  -> EyeColor.BLACK
-            "BLUE"   -> EyeColor.BLUE
-            "GREEN"  -> EyeColor.GREEN
-            "YELLOW" -> EyeColor.YELLOW
-            "WHITE"  -> EyeColor.WHITE
-            else     -> throw FailedCreateObjectException("Неизвестный цвет глаз")
-        }
+        inline fun parseEyeColor(raw: String): EyeColor = EyeColor[raw] ?: throw FailedCreateObjectException("Неизвестный цвет глаз")
 
         /**
          * Парсит значение [HairColor] из строки
          */
         // @JvmStatic
         @Suppress("NOTHING_TO_INLINE")
-        inline fun parseHairColor(raw: String): HairColor = when (raw) {
-            "BROWN" -> HairColor.BROWN
-            "RED"   -> HairColor.RED
-            "WHITE" -> HairColor.WHITE
-            else    -> throw FailedCreateObjectException("Неизвестный цвет волос")
-        }
+        inline fun parseHairColor(raw: String): HairColor = HairColor[raw] ?: throw FailedCreateObjectException("Неизвестный цвет волос")
+
 
         /**
          * Парсит значение [Country] из строки
          */
         // @JvmStatic
         @Suppress("NOTHING_TO_INLINE")
-        inline fun parseCountry(raw: String): Country = when (raw) {
-            "CHINA"       -> Country.CHINA
-            "GERMANY"     -> Country.GERMANY
-            "JAPAN"       -> Country.JAPAN
-            "RUSSIA"      -> Country.RUSSIA
-            "NORTH_KOREA" -> Country.NORTH_KOREA
-            else          -> throw FailedCreateObjectException("Неизвестная национальность")
-        }
+        inline fun parseCountry(raw: String): Country = Country[raw] ?: throw FailedCreateObjectException("Неизвестная национальность")
     }
 
     init {

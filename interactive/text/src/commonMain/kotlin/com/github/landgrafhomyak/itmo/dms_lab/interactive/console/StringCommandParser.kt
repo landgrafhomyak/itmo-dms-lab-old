@@ -9,7 +9,7 @@ import com.github.landgrafhomyak.itmo.dms_lab.requests.Clear
 import com.github.landgrafhomyak.itmo.dms_lab.requests.Empty
 import com.github.landgrafhomyak.itmo.dms_lab.requests.ExecuteScript
 import com.github.landgrafhomyak.itmo.dms_lab.requests.Exit
-import com.github.landgrafhomyak.itmo.dms_lab.requests.ExternCommand
+import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundCommandFactory
 import com.github.landgrafhomyak.itmo.dms_lab.requests.FilterByDifficulty
 import com.github.landgrafhomyak.itmo.dms_lab.requests.Help
 import com.github.landgrafhomyak.itmo.dms_lab.requests.History
@@ -37,8 +37,8 @@ import kotlin.jvm.JvmStatic
  */
 @Suppress("unused")
 class StringCommandParser(
-    private val saveClosure: ExternCommand<Save, String>?,
-    private val executeClosure: ExternCommand<ExecuteScript, String>?
+    private val saveClosure: BoundCommandFactory<Save, String>?,
+    private val executeClosure: BoundCommandFactory<ExecuteScript, String>?
 ) {
     /**
      * Парсит строку в [конечный объект запроса][BoundRequest]

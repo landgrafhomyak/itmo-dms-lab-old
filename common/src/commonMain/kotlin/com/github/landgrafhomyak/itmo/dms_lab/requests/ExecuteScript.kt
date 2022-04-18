@@ -1,6 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.requests
 
-import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptSourceFactory
+import com.github.landgrafhomyak.itmo.dms_lab.Factory
+import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptSource
 
 /**
  * Конечный объект запроса `execute_script`
@@ -10,7 +11,7 @@ import com.github.landgrafhomyak.itmo.dms_lab.io.ScriptSourceFactory
 @Suppress("unused", "EqualsOrHashCode")
 class ExecuteScript(
     @Suppress("MemberVisibilityCanBePrivate")
-    val factory: ScriptSourceFactory
+    val factory: Factory<ScriptSource>
 ) : BoundRequest() {
     override val meta: RequestMeta
         get() = Meta

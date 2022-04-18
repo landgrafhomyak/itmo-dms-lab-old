@@ -8,15 +8,32 @@ enum class Difficulty {
     /**
      * Сложно
      */
-    HARD,
+    HARD {
+        override val id: String
+            get() = "HARD"
+    },
 
     /**
      * Безумно сложно
      */
-    INSANE,
+    INSANE {
+        override val id: String
+            get() = "INSANE"
+    },
 
     /**
      * Ужасно сложно
      */
-    TERRIBLE
+    TERRIBLE {
+        override val id: String
+            get() = "TERRIBLE"
+    };
+
+    /**
+     * Идентификатор значения
+     */
+    abstract val id: String
+
+    @Suppress("RemoveRedundantQualifierName")
+    companion object : EnumMap<Difficulty, String>(Difficulty.values(), { this.id })
 }

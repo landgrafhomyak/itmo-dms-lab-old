@@ -9,25 +9,47 @@ enum class Country {
     /**
      * Россия
      */
-    RUSSIA,
+    RUSSIA {
+        override val id: String
+            get() = "RUSSIA"
+    },
 
     /**
      * Германия
      */
-    GERMANY,
+    GERMANY {
+        override val id: String
+            get() = "GERMANY"
+    },
 
     /**
      * Китай
      */
-    CHINA,
+    CHINA {
+        override val id: String
+            get() = "CHINA"
+    },
 
     /**
      * Северная Корея
      */
-    NORTH_KOREA,
+    NORTH_KOREA {
+        override val id: String
+            get() = "NORTH_KOREA"
+    },
 
     /**
      * Япония
      */
-    JAPAN
+    JAPAN {
+        override val id: String
+            get() = "JAPAN"
+    };
+    /**
+     * Идентификатор значения
+     */
+    abstract val id: String
+
+    @Suppress("RemoveRedundantQualifierName")
+    companion object : EnumMap<Country, String>(Country.values(), { this.id })
 }

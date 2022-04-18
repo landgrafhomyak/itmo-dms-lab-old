@@ -8,15 +8,33 @@ enum class HairColor {
     /**
      * Рыжий
      */
-    RED,
+    RED {
+        override val id: String
+            get() = "RED"
+    },
 
     /**
      * Седой
      */
-    WHITE,
+    WHITE {
+        override val id: String
+            get() = "WHITE"
+    },
 
     /**
      * Тёмный
      */
-    BROWN
+    BROWN {
+        override val id: String
+            get() = "BROWN"
+    };
+
+
+    /**
+     * Идентификатор значения
+     */
+    abstract val id: String
+
+    @Suppress("RemoveRedundantQualifierName")
+    companion object : EnumMap<HairColor, String>(HairColor.values(), { this.id })
 }

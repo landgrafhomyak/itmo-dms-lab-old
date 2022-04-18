@@ -8,25 +8,47 @@ enum class EyeColor {
     /**
      * Зелёный
      */
-    GREEN,
+    GREEN {
+        override val id: String
+            get() = "GREEN"
+    },
 
     /**
      * Чёрный
      */
-    BLACK,
+    BLACK {
+        override val id: String
+            get() = "BLACK"
+    },
 
     /**
      * Синий
      */
-    BLUE,
+    BLUE {
+        override val id: String
+            get() = "BLUE"
+    },
 
     /**
      * Жёлтый
      */
-    YELLOW,
+    YELLOW {
+        override val id: String
+            get() = "YELLOW"
+    },
 
     /**
      * Белый
      */
-    WHITE
+    WHITE {
+        override val id: String
+            get() = "WHITE"
+    };
+    /**
+     * Идентификатор значения
+     */
+    abstract val id: String
+
+    @Suppress("RemoveRedundantQualifierName")
+    companion object : EnumMap<EyeColor, String>(EyeColor.values(), { this.id })
 }
