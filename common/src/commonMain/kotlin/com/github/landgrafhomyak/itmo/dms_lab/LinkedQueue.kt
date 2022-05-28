@@ -1,8 +1,8 @@
-@file:JvmName("LinkedQueueKt")
-
 package com.github.landgrafhomyak.itmo.dms_lab
 
-import kotlin.jvm.JvmName
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 class LinkedQueue<T> : Iterable<T> {
     private data class Node<T>(
@@ -23,7 +23,7 @@ class LinkedQueue<T> : Iterable<T> {
         this.oldest = null
     }
 
-    fun add(value: T) {
+    fun push(value: T) {
         this.newest = Node(value)
             .apply node@{ this@LinkedQueue.newest?.newer = this@node }
         if (this.oldest == null) this.oldest = this.newest
@@ -50,27 +50,27 @@ class LinkedQueue<T> : Iterable<T> {
 
     fun pop(): T = this.assertOldest().exclude()
 
-    private class Iterator<T>(private var node: Node<T>?) : kotlin.collections.Iterator<T> {
+    private class IteratorImpl<T>(private var node: Node<T>?) : Iterator<T> {
         override fun hasNext(): Boolean = this.node != null
 
         override fun next(): T = (this.node ?: throw IllegalStateException("Queue iteration has been ended"))
-            .apply node@{ this@Iterator.node = this@node.newer }
+            .apply node@{ this@IteratorImpl.node = this@node.newer }
             .value
     }
 
-    override fun iterator(): kotlin.collections.Iterator<T> = Iterator(this.oldest)
+    override fun iterator(): Iterator<T> = IteratorImpl(this.oldest)
 
-    private inner class MutableIterator(private var node: Node<T>?) : kotlin.collections.MutableIterator<T> {
+    private inner class MutableIteratorImpl(private var node: Node<T>?) : MutableIterator<T> {
         @Suppress("UNCHECKED_CAST")
         private var older2: Node<T?> = Node(null, Node(null, this.node as Node<T?>))
 
         override fun hasNext(): Boolean = this.node != null
 
         override fun next(): T = (this.node ?: throw IllegalStateException("Queue iteration has been ended"))
-            .apply node@{ this@MutableIterator.node = this@node.newer }
+            .apply node@{ this@MutableIteratorImpl.node = this@node.newer }
             .apply node@{
-                if (this@MutableIterator.older2.newer != this@node)
-                    this@MutableIterator.older2 = this@MutableIterator.older2.newer ?: throw RuntimeException("Queue was corrupted")
+                if (this@MutableIteratorImpl.older2.newer != this@node)
+                    this@MutableIteratorImpl.older2 = this@MutableIteratorImpl.older2.newer ?: throw RuntimeException("Queue was corrupted")
             }
             .value
 
@@ -90,7 +90,7 @@ class LinkedQueue<T> : Iterable<T> {
     }
 
     private inner class MutableIteratorDelegate : MutableIterable<T> {
-        override fun iterator(): kotlin.collections.MutableIterator<T> = this@LinkedQueue.MutableIterator(this@LinkedQueue.oldest)
+        override fun iterator(): MutableIterator<T> = this@LinkedQueue.MutableIteratorImpl(this@LinkedQueue.oldest)
     }
 
     @Suppress("unused")
@@ -98,6 +98,12 @@ class LinkedQueue<T> : Iterable<T> {
 }
 
 
+@OptIn(ExperimentalContracts::class)
 @Suppress("unused")
-inline fun <T> buildQueue(builder: LinkedQueue<T>.() -> Unit): LinkedQueue<T> =
-    LinkedQueue<T>().apply(builder)
+inline fun <T> buildQueue(builder: LinkedQueue<T>.() -> Unit): LinkedQueue<T> {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    return LinkedQueue<T>().apply(builder)
+}

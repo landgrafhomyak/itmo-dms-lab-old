@@ -9,9 +9,9 @@ name: Tests
 
 on:
   push:
-    branches: [ master, dev ]
+    branches: [ master, dev, mpp, jvm ]
   pull_request:
-    branches: [ master, dev ]
+    branches: [ master, dev, mpp, jvm ]
 
 jobs:
   test:

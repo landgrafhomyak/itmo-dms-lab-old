@@ -55,6 +55,9 @@ kotlin {
 
     @Suppress("UNUSED_VARIABLE")
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.RequiresOptIn")
+        }
         val commonMain by getting {
             dependencies {
                 compileOnly("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
@@ -67,5 +70,6 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+        val jvmMain by getting {}
     }
 }

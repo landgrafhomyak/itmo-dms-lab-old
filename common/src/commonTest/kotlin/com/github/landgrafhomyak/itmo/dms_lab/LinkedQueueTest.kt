@@ -9,7 +9,7 @@ internal class LinkedQueueTest {
     fun testAdding() {
         buildQueue<Int> {
             for (v in 0..100)
-                add(v)
+                push(v)
             assertEquals(101, count())
         }
     }
@@ -18,7 +18,7 @@ internal class LinkedQueueTest {
     fun testAddingAndRemoving() {
         buildQueue<Int> {
             for (v in 0..100)
-                add(v)
+                push(v)
             while (isNotEmpty())
                 pop()
         }
@@ -28,7 +28,7 @@ internal class LinkedQueueTest {
     fun testConstIterator() {
         buildQueue<Int> queue@{
             for (v in 0..100)
-                add(v)
+                push(v)
             assertContentEquals(0..100, this@queue)
         }
     }
@@ -37,7 +37,7 @@ internal class LinkedQueueTest {
     fun testMutableIterator() {
         buildQueue<Int> queue@{
             for (v in 0..100)
-                add(v)
+                push(v)
             asMutableIterable().removeAll { n -> n % 2 != 0 }
             assertContentEquals(0..100 step 2, this@queue)
         }

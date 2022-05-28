@@ -1,6 +1,9 @@
 package com.github.landgrafhomyak.itmo.dms_lab
 
 import java.util.Queue
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 @Suppress("unused")
 @JvmInline
@@ -9,7 +12,7 @@ value class JLinkedQueue<T>(private val original: LinkedQueue<T>) : Queue<T> {
     fun asKQueue() = this.original
 
     override fun add(element: T): Boolean {
-        this.original.add(element)
+        this.original.push(element)
         return true
     }
 
@@ -53,7 +56,7 @@ value class JLinkedQueue<T>(private val original: LinkedQueue<T>) : Queue<T> {
         this.original.asMutableIterable().retainAll { element -> element in elements }
 
     override fun offer(e: T): Boolean {
-        this.original.add(e)
+        this.original.push(e)
         return true
     }
 
@@ -67,3 +70,13 @@ value class JLinkedQueue<T>(private val original: LinkedQueue<T>) : Queue<T> {
 @Suppress("unused", "NOTHING_TO_INLINE")
 inline fun <T> LinkedQueue<T>.asJQueue() = JLinkedQueue(this)
 
+
+@OptIn(ExperimentalContracts::class)
+@Suppress("unused")
+inline fun <T> buildJLinkedQueue(builder: JLinkedQueue<T>.() -> Unit): JLinkedQueue<T> {
+    contract {
+        callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
+    }
+
+    return JLinkedQueue(LinkedQueue<T>()).apply(builder)
+}
