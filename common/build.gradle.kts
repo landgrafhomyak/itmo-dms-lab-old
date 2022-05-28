@@ -1,5 +1,9 @@
+@Suppress("PropertyName")
+val ktor_version: String by project
+
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     `maven-publish`
 }
 
@@ -13,7 +17,7 @@ kotlin {
             kotlinOptions.jvmTarget = "1.8"
         }
     }
-    js( BOTH) {
+    js(BOTH) {
         nodejs {}
         browser {}
     }
@@ -32,8 +36,10 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+                api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.3")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
         }
         val commonTest by getting {
