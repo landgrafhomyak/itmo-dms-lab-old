@@ -13,5 +13,5 @@ public interface RequestTransmitter<R: BoundRequest<*, *>> {
     /**
      * Функция для передачи [запроса][BoundRequest]
      */
-    public suspend fun send(data: R)
+    public suspend fun send(request: R)
 }

@@ -1,5 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.io
 
+import com.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
+import com.github.landgrafhomyak.itmo.dms_lab.lifecycle.RequestsRedirector
 import com.github.landgrafhomyak.itmo.dms_lab.LinkedQueue
 import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import kotlinx.coroutines.sync.Mutex
@@ -11,8 +13,11 @@ import kotlinx.coroutines.yield
  * Курьер для доставки [запросов][BoundRequest] между корутинами.
  * Имеет синхронизацию.
  *
+ * @param R общий тип [запросов][BoundRequest] с указанием типа [коллекции][AbstractRecordsCollection] и элементов в ней
  * @property isClosed флаг для блокировки получения запросов, если установлен,
  * то [`fetch`][RequestReceiver.fetch] возвращает `null`, а [`send`][RequestTransmitter] работает без изменений
+ * @see LocalRequestReceiver
+ * @see RequestsRedirector
  */
 @Suppress("unused", "SpellCheckingInspection")
 public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, RequestTransmitter<R> {
@@ -61,10 +66,10 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
         }
     }
 
-    override suspend fun send(data: R) {
+    override suspend fun send(request: R) {
         this.mutex.lock()
         try {
-            this.queue.push(data)
+            this.queue.push(request)
         } finally {
             this.mutex.unlock()
         }

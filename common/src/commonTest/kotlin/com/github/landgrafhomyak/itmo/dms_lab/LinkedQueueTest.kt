@@ -26,12 +26,12 @@ internal class LinkedQueueTest {
      */
     @Test
     fun testAddingAndRemoving() {
-        buildLinkedQueue<Int> {
+        buildLinkedQueue<Int> queue@{
             for (v in 0..100)
                 push(v)
             while (isNotEmpty())
                 pop()
-            assertEquals(iterator {}, iterator())
+            assertContentEquals(emptyList(), this@queue)
         }
     }
 

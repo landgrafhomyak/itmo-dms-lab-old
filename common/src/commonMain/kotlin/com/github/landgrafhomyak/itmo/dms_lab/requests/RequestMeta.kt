@@ -2,6 +2,7 @@ package com.github.landgrafhomyak.itmo.dms_lab.requests
 
 /**
  * Мета-объект описывающий типы [запросов][BoundRequest]
+ * @see BoundRequest
  */
 public interface RequestMeta {
     /**
