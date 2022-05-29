@@ -1,8 +1,20 @@
 package com.github.landgrafhomyak.itmo.dms_lab.requests
 
-interface RequestMeta {
-    val description: String
+/**
+ * Мета-объект описывающий типы [запросов][BoundRequest]
+ */
+public interface RequestMeta {
+    /**
+     * Описание [запроса][BoundRequest]
+     */
+    public val description: String
+
+    /**
+     * Идентификатор, по которому [запрос][BoundRequest] может быть выполнен из консоли.
+     *
+     * Если равен `null` - не может быть выполнен из консоли.
+     */
     @Suppress("unused")
-    val consoleName: String?
+    public val consoleName: String?
         get() = null
 }

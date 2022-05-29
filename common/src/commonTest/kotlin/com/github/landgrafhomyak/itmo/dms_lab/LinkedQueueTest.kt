@@ -4,38 +4,58 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
+/**
+ * Набор тестов для проверки [очереди][LinkedQueue].
+ */
 internal class LinkedQueueTest {
+    /**
+     * Проверяет, что [очередь][LinkedQueue] корректно [добавляет][LinkedQueue.push] элементы
+     */
     @Test
     fun testAdding() {
-        buildQueue<Int> {
+        buildLinkedQueue<Int> {
             for (v in 0..100)
                 push(v)
             assertEquals(101, count())
         }
     }
 
+    /**
+     * Проверяет, что [очередь][LinkedQueue] корректно [добавляет][LinkedQueue.push]
+     * и [удаляет][LinkedQueue.pop] элементы
+     */
     @Test
     fun testAddingAndRemoving() {
-        buildQueue<Int> {
+        buildLinkedQueue<Int> {
             for (v in 0..100)
                 push(v)
             while (isNotEmpty())
                 pop()
+            assertEquals(iterator {}, iterator())
         }
     }
 
+
+    /**
+     * Проверяет, что [очередь][LinkedQueue] корректно хранит элементы, а [итератор][Iterator]
+     * корректно их [возвращает][Iterator.next]
+     */
     @Test
     fun testConstIterator() {
-        buildQueue<Int> queue@{
+        buildLinkedQueue<Int> queue@{
             for (v in 0..100)
                 push(v)
             assertContentEquals(0..100, this@queue)
         }
     }
 
+    /**
+     * Проверяет, что [итератор][MutableIterator] корректно [удаляет][MutableIterator.remove]
+     * элементы из [очереди][LinkedQueue]
+     */
     @Test
     fun testMutableIterator() {
-        buildQueue<Int> queue@{
+        buildLinkedQueue<Int> queue@{
             for (v in 0..100)
                 push(v)
             asMutableIterable().removeAll { n -> n % 2 != 0 }

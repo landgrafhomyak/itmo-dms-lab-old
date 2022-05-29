@@ -4,9 +4,15 @@ import com.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
+/**
+ * Набор тестов для проверки [истории запросов][RequestsHistory]
+ */
 internal class RequestsHistoryTest {
+    /**
+     * Минимальный объект [запроса][BoundRequest] для [тестов][RequestsHistoryTest]
+     */
     @Suppress("EqualsOrHashCode")
-    private class SimpleRequest(val index: Int) : BoundRequest<AbstractRecordsCollection<*>>, Comparable<SimpleRequest> {
+    private class SimpleRequest(val index: Int) : BoundRequest<AbstractRecordsCollection<Any>, Any>, Comparable<SimpleRequest> {
         override val meta: RequestMeta get() = SimpleRequest
 
         companion object : RequestMeta {
@@ -21,9 +27,12 @@ internal class RequestsHistoryTest {
         }
     }
 
+    /**
+     * Проверка работоспособности [история][RequestsHistory] при неполном заполнении
+     */
     @Test
     fun testNotFull() {
-        buildRequestsHistory<AbstractRecordsCollection<*>>(10u) history@{
+        buildRequestsHistory<SimpleRequest>(10u) history@{
             push(SimpleRequest(90))
             push(SimpleRequest(-7))
             push(SimpleRequest(0))
@@ -34,9 +43,12 @@ internal class RequestsHistoryTest {
         }
     }
 
+    /**
+     * Проверка работоспособности [истории][RequestsHistory] при превышении [вместимость][RequestsHistory.capacity]
+     */
     @Test
     fun testOverflow() {
-        buildRequestsHistory<AbstractRecordsCollection<*>>(2u) history@{
+        buildRequestsHistory<SimpleRequest>(2u) history@{
             push(SimpleRequest(90))
             push(SimpleRequest(-7))
             push(SimpleRequest(0))
@@ -47,9 +59,13 @@ internal class RequestsHistoryTest {
         }
     }
 
+    /**
+     * Проверка работоспособности [истории][RequestsHistory] при нулевой
+     * [вместимости][RequestsHistory.capacity]
+     */
     @Test
     fun testZeroCapacity() {
-        buildRequestsHistory<AbstractRecordsCollection<*>>(0u) history@{
+        buildRequestsHistory<SimpleRequest>(0u) history@{
             push(SimpleRequest(90))
             push(SimpleRequest(-7))
             push(SimpleRequest(0))
@@ -57,7 +73,6 @@ internal class RequestsHistoryTest {
                 listOf(),
                 this@history
             )
-
         }
     }
 }

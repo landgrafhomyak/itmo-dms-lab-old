@@ -2,6 +2,9 @@ package com.github.landgrafhomyak.itmo.dms_lab.requests
 
 import com.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 
-interface BoundRequest<C : AbstractRecordsCollection<*>> {
-    val meta: RequestMeta
+public interface BoundRequest<C : AbstractRecordsCollection<E>, E : Any> {
+    /**
+     * [Мета-объект][RequestMeta] описывающий тип этого запроса
+     */
+    public val meta: RequestMeta
 }

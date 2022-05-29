@@ -5,11 +5,20 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-@Suppress("unused")
+/**
+ * Обёртка над [LinkedQueue] с имплементацией интерфейса [Queue]
+ *
+ * @see asJQueue
+ * @see buildJLinkedQueue
+ */
+@Suppress("unused", "GrazieInspection")
 @JvmInline
-value class JLinkedQueue<T>(private val original: LinkedQueue<T>) : Queue<T> {
+public value class JLinkedQueue<T>(private val original: LinkedQueue<T>) : Queue<T> {
+    /**
+     * Возвращает [оригинальную очередь][LinkedQueue]
+     */
     @Suppress("unused")
-    fun asKQueue() = this.original
+    public fun asKQueue(): LinkedQueue<T> = this.original
 
     override fun add(element: T): Boolean {
         this.original.push(element)
@@ -67,13 +76,22 @@ value class JLinkedQueue<T>(private val original: LinkedQueue<T>) : Queue<T> {
     override fun peek(): T? = this.original.getOrNull()
 }
 
-@Suppress("unused", "NOTHING_TO_INLINE")
-inline fun <T> LinkedQueue<T>.asJQueue() = JLinkedQueue(this)
+/**
+ * Оборачивает [очередь][LinkedQueue] для имлементации интерфейса [Queue]
+ * @see LinkedQueue
+ * @see JLinkedQueue
+ */
+@Suppress("unused", "NOTHING_TO_INLINE", "SpellCheckingInspection")
+public inline fun <T> LinkedQueue<T>.asJQueue(): JLinkedQueue<T> = JLinkedQueue(this)
 
-
+/**
+ * Собирает [очередь][JLinkedQueue]
+ * @see JLinkedQueue
+ * @see buildLinkedQueue
+ */
 @OptIn(ExperimentalContracts::class)
 @Suppress("unused")
-inline fun <T> buildJLinkedQueue(builder: JLinkedQueue<T>.() -> Unit): JLinkedQueue<T> {
+public inline fun <T> buildJLinkedQueue(builder: JLinkedQueue<T>.() -> Unit): JLinkedQueue<T> {
     contract {
         callsInPlace(builder, InvocationKind.EXACTLY_ONCE)
     }

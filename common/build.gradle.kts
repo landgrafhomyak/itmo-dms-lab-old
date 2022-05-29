@@ -20,6 +20,8 @@ repositories {
 }
 
 kotlin {
+    explicitApi()
+
     jvm()
     js(BOTH)
     ios()
