@@ -1,6 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.requests
 
 import com.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
+import com.github.landgrafhomyak.itmo.dms_lab.lifecycle.ExecutionContext
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
@@ -25,6 +26,8 @@ internal class RequestsHistoryTest {
             if (other !is SimpleRequest) return false
             return this.index == other.index
         }
+
+        override suspend fun ExecutionContext<AbstractRecordsCollection<Any>, Any>.execute() {}
     }
 
     /**

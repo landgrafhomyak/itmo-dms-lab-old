@@ -13,7 +13,6 @@ import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 @Suppress("unused", "KDocUnresolvedReference")
 public class LocalRequestReceiver<R : BoundRequest<*, *>>(private val iterator: Iterator<R>) : RequestReceiver<R> {
     public constructor(vararg requests: R) : this(requests.iterator())
-    public constructor(requests: Array<R>) : this(requests.iterator())
     public constructor(requests: Iterable<R>) : this(requests.iterator())
     public constructor(requests: Sequence<R>) : this(requests.iterator())
 

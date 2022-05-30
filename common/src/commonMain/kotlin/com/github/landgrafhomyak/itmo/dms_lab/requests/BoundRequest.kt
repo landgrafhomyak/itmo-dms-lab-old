@@ -24,5 +24,5 @@ public interface BoundRequest<C : AbstractRecordsCollection<E>, E : Any> {
     /**
      * Метод для выполнения [запроса][BoundRequest]
      */
-    public suspend fun ExecutionContext<C>.execute()
+    public suspend fun ExecutionContext<C, E>.execute()
 }
