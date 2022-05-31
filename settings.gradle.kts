@@ -1,3 +1,2 @@
-@Suppress("SpellCheckingInspection")
-rootProject.name = "itmo-dms-lab"
-include(":common")
+rootProject.name = "dms-lab"
+include(":core")

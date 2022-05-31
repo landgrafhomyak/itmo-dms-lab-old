@@ -24,12 +24,14 @@ public annotation class DisplayName(val title: String)
 /**
  * Доступ к аннотации [DisplayName] извне
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline val KSerializer<*>.displayName: String?
     get() = this.descriptor.displayName
 
 /**
  * Доступ к аннотации [DisplayName] извне
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline val KSerializer<*>.displayOrSerialName: String
     get() = this.descriptor.displayOrSerialName
 
@@ -37,6 +39,7 @@ public inline val KSerializer<*>.displayOrSerialName: String
  * Доступ к аннотации [DisplayName] у членов [перечисления][Enum] извне
  */
 @OptIn(InternalSerializationApi::class)
+@Suppress("NOTHING_TO_INLINE")
 public inline val <reified T : Enum<*>> T.displayName: String?
     get() = T::class.serializer().descriptor.getElementDisplayName(this.ordinal)
 
@@ -44,36 +47,42 @@ public inline val <reified T : Enum<*>> T.displayName: String?
  * Доступ к аннотации [DisplayName] у членов [перечисления][Enum] извне
  */
 @OptIn(InternalSerializationApi::class)
+@Suppress("NOTHING_TO_INLINE")
 public inline val <reified T : Enum<*>> T.displayOrSerialName: String
     get() = T::class.serializer().descriptor.getElementDisplayOrSerialName(this.ordinal)
 
 /**
  * Ищет в коллекции аннотацию [DisplayName] и возвращает её значение или `null`, если она не найдена
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline val <T : Annotation> Iterable<T>.displayName: String?
     get() = this.firstNotNullOfOrNull { ann -> ann as? DisplayName }?.title
 
 /**
  * Возвращает значение аннотации [DisplayName] в [дескрипторе][SerialDescriptor] или `null`, если она не объявлена
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline val SerialDescriptor.displayName: String?
     get() = this.annotations.displayName
 
 /**
  * Возвращает значение аннотации [DisplayName] в [дескрипторе][SerialDescriptor] или [SerialDescriptor.serialName], если она не объявлена
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline val SerialDescriptor.displayOrSerialName: String
     get() = this.displayName ?: this.serialName
 
 /**
  * Возвращает значение аннотации [DisplayName] в [дескрипторе][SerialDescriptor] элемента или `null`, если она не объявлена
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline fun SerialDescriptor.getElementDisplayName(index: Int): String? =
     this.getElementAnnotations(index).displayName
 
 /**
  * Возвращает значение аннотации [DisplayName] в [дескрипторе][SerialDescriptor] в элементе или [SerialDescriptor.getElementDisplayName], если она не объявлена
  */
+@Suppress("NOTHING_TO_INLINE")
 public inline fun SerialDescriptor.getElementDisplayOrSerialName(index: Int): String =
     this.getElementDisplayName(index) ?: this.getElementName(index)
 
