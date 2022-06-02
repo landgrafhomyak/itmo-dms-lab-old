@@ -75,6 +75,7 @@ public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, Compos
      * Информирует пользователя о том что именно ему надо ввести
      * @param allowedValues разрешённые значения
      */
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun title(allowedValues: String) {
         println("Введите $allowedValues '${this.buildClassStack}':")
     }
@@ -83,6 +84,7 @@ public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, Compos
      * Сообщение о том что введено недопустимое пустое значение
      * @param defaultValue значение по умолчанию, ассоциированное с пустым значением
      */
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun emptyValue(defaultValue: String): Nothing? {
         println("Пустое значение можно было бы расценить как $defaultValue, но нет")
         return null
@@ -91,6 +93,7 @@ public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, Compos
     /**
      * Сообщение о том что введено недопустимое значение
      */
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun invalidValue(message: String = "Невалидное значение"): Nothing? {
         println(message)
         return null

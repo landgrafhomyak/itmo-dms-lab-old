@@ -36,6 +36,7 @@ public class TextViewEncoder(
     /**
      * Сокращение от [TextViewEncoder.builder].[append][StringBuilder.append]
      */
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun add(s: String) = this.builder.append(s)
 
     override val serializersModule: SerializersModule

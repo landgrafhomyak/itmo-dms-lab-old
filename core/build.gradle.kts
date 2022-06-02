@@ -13,6 +13,10 @@ plugins {
 //    id("org.jetbrains.kotlin.android")
 }
 
+@Suppress("SpellCheckingInspection")
+group = "com.github.landgrafhomyak.itmo"
+version = "0.0b0"
+
 repositories {
     mavenCentral()
     google()
@@ -133,4 +137,15 @@ kotlin {
             dependsOn(nativeTest)
         }
     }
+
+    publishing {
+        publications.withType<MavenPublication> {
+            artifactId = "dms-lab-core" + if (name == "kotlinMultiplatform") {
+                ""
+            } else {
+                "-$name"
+            }
+        }
+    }
 }
+
