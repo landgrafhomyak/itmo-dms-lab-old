@@ -1,4 +1,4 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.interop
 
 /**
  * Объект для продвинутого доступа к аргументам командной строки

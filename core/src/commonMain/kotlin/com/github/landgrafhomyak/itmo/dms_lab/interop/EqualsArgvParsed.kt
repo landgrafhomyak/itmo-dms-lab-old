@@ -1,4 +1,4 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.interop
 
 import kotlin.jvm.JvmInline
 

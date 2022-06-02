@@ -1,13 +1,19 @@
-package com.github.landgrafhomyak.itmo.dms_lab
+package com.github.landgrafhomyak.itmo.dms_lab.interop
 
 import kotlin.jvm.JvmInline
 
 /**
- * Считает все аргументы командной строки ключами
+ * Читает аргументы из URL адреса
  */
 @JvmInline
-public value class PlainArgvParsed private constructor(private val original: Map<String, Nothing?>) : ArgvParsed {
-    public constructor(argv: Array<String>) : this(argv.associateWith { null })
+public value class UrlQueryArgvParsed private constructor(private val original: Map<String, String?>) : ArgvParsed {
+    public constructor(url: String) : this(
+        url
+            .run { split('?', limit = 1).getOrNull(1) ?: String() }
+            .split("&")
+            .map { s -> s.split('=', limit = 1) }
+            .associate { p -> p[0] to p.getOrNull(1) }
+    )
 
 
     override val entries: Set<Map.Entry<String, String?>>

@@ -1,4 +1,4 @@
-package com.github.landgrafhomyak.itmo.dms_lab.io
+package com.github.landgrafhomyak.itmo.dms_lab.interop
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

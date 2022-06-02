@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalSerializationApi::class)
 
-package com.github.landgrafhomyak.itmo.dms_lab.io
+package com.github.landgrafhomyak.itmo.dms_lab.interop
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationStrategy

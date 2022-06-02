@@ -1,5 +1,7 @@
-package com.github.landgrafhomyak.itmo.dms_lab.io
+package com.github.landgrafhomyak.itmo.dms_lab.interop
 
+import com.github.landgrafhomyak.itmo.dms_lab.io.Coloring
+import com.github.landgrafhomyak.itmo.dms_lab.io.NoColoring
 import kotlinx.cinterop.CPointer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -1,7 +1,7 @@
 package com.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
 import com.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
-import com.github.landgrafhomyak.itmo.dms_lab.io.Logger
+import com.github.landgrafhomyak.itmo.dms_lab.interop.Logger
 import com.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import com.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import com.github.landgrafhomyak.itmo.dms_lab.requests.RequestsHistory
