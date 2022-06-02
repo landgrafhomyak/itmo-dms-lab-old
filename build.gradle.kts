@@ -5,11 +5,14 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.6.20" apply false
 }
 
-repositories {
-    google()
-    mavenCentral()
-}
 
 @Suppress("SpellCheckingInspection")
 group = "com.github.landgrafhomyak.itmo"
-version = "1.0-SNAPSHOT"
+version = "1.0b0"
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}

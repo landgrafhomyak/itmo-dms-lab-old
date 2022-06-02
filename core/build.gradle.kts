@@ -1,3 +1,4 @@
+import java.lang.System
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -15,12 +16,7 @@ plugins {
 
 @Suppress("SpellCheckingInspection")
 group = "com.github.landgrafhomyak.itmo"
-version = "0.0b0"
-
-repositories {
-    mavenCentral()
-    google()
-}
+version = "1.0b0"
 
 kotlin {
     explicitApi()
@@ -144,6 +140,15 @@ kotlin {
                 ""
             } else {
                 "-$name"
+            }
+        }
+        repositories {
+            maven(url = "https://maven.pkg.github.com/landgrafhomyak/itmo-dms-lab") {
+                name = "GitHubPackages"
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
             }
         }
     }

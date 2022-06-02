@@ -37,3 +37,13 @@ jobs:
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
           arguments: "allTests"
+      - name: Publish package
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          # until gh packages can't store native .klib
+          arguments: >
+            publishJsPublicationToGitHubPackagesRepository 
+            publishJvmPublicationToGitHubPackagesRepository 
+            publishKotlinMultiplatformPublicationToGitHubPackagesRepository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
