@@ -1,9 +1,26 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+import kotlin.reflect.KProperty
 
-@Suppress("PropertyName")
-val ktor_version: String by project
+class PropertyByName(private val name: String) {
+    private inner class PropertyWrapper(
+        private val original: KProperty<*>,
+    ) : KProperty<Any?> by original {
+        override val name: String
+            get() = this@PropertyByName.name
+    }
+
+    operator fun provideDelegate(thisRef: Any?, property: KProperty<*>): PropertyDelegate =
+        project.provideDelegate(thisRef, this.PropertyWrapper(property))
+}
+
+fun property(name: String) = PropertyByName(name)
+
+val datetimeVersion: String by property("datetime.version")
+val coroutinesVersion: String by property("coroutines.version")
+val serializationVersion: String by property("serialization.version")
+val ktorVersion: String by property("ktor.version")
 
 plugins {
     kotlin("multiplatform") version "1.6.21"
@@ -63,9 +80,10 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.3")
+                implementation(kotlin("stdlib"))
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
             }
         }
         val commonTest by getting {
