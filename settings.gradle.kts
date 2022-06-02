@@ -1,2 +1,1 @@
-rootProject.name = "dms-lab"
-include(":core")
+rootProject.name = "dms-lab-core"
