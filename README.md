@@ -92,7 +92,7 @@ enum class Country {
 > Реализовать консольное приложение, которое реализует управление коллекцией объектов в интерактивном режиме. В коллекции необходимо хранить объекты класса LabWork, описание которого приведено ниже.
 > * Класс, коллекцией экземпляров которого управляет программа, должен реализовывать сортировку по умолчанию.
 > * Все требования к полям класса (указанные в виде комментариев) должны быть выполнены.
-> * Для хранения необходимо использовать коллекцию типа `java.util.LinkedHashSet` _(заменён [`com.github.landgrafhomyak.itmo.dms_lab.collections.RedBlackSetWithKeyAccess`](/common/src/commonMain/kotlin/com/github/landgrafhomyak/itmo/dms_lab/collections/Wrappers.kt))_
+> * Для хранения необходимо использовать коллекцию типа `java.util.LinkedHashSet` _(заменён [`io.github.landgrafhomyak.itmo.dms_lab.collections.RedBlackSetWithKeyAccess`](/common/src/commonMain/kotlin/com/github/landgrafhomyak/itmo/dms_lab/collections/Wrappers.kt))_
 > * При запуске приложения коллекция должна автоматически заполняться значениями из файла.
 > * Имя файла должно передаваться программе с помощью: аргумент командной строки.
 > * Данные должны храниться в файле в формате `csv` _(дополнительно поддерживаются форматы `xml`, `json`)_

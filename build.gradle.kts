@@ -31,12 +31,13 @@ plugins {
 }
 
 @Suppress("SpellCheckingInspection")
-group = "com.github.landgrafhomyak.itmo"
-version = "1.0b0"
+group = "io.github.landgrafhomyak.itmo"
+version = "1.0-b0"
 
 repositories {
     mavenCentral()
     google()
+    gradlePluginPortal()
 }
 
 kotlin {
@@ -157,3 +158,35 @@ kotlin {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "sonatype"
+            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
+    publications.withType<MavenPublication> {
+
+        pom {
+            name.set("Framework for laboratory work piikt/1/5-7 in ITMO")
+            description.set("Framework for laboratory work piikt/1/5-7 in ITMO")
+            url.set("https://github.com/landgrafhomyak/itmo-dms-lab")
+
+            developers {
+                developer {
+                    id.set("landgrafhomyak")
+                    name.set("Andrew Golovashevich")
+                    email.set("tankist.scratch.p@gmail.com")
+                }
+            }
+
+            scm {
+                url.set("https://github.com/landgrafhomyak/itmo-dms-lab")
+            }
+        }
+    }
+}
