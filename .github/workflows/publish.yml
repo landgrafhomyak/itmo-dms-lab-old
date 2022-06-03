@@ -8,10 +8,9 @@
 name: Tests
 
 on:
-  push:
-    branches: [ core-master, core-dev, gui-master, gui-dev ]
-  pull_request:
-    branches: [ core-master, core-dev, gui-master, gui-dev ]
+  release:
+    types:
+      - published
 
 jobs:
   test:
@@ -33,17 +32,10 @@ jobs:
         with:
           java-version: '8'
           distribution: 'temurin'
-      - name: Testing with Gradle
+      - name: Publishing to Maven Central
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: "allTests"
-      # - name: Publish package
-      #  uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-      #  with:
-      #    # until gh packages can't store native .klib
-      #    arguments: >
-      #      publishJsPublicationToGitHubPackagesRepository
-      #      publishJvmPublicationToGitHubPackagesRepository
-      #      publishKotlinMultiplatformPublicationToGitHubPackagesRepository
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          arguments: "publishAllPublicationsToSonatypeRepository"
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
