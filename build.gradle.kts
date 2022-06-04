@@ -26,6 +26,7 @@ plugins {
     kotlin("multiplatform") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
     `maven-publish`
+    signing
 //    id("com.android.library")
 //    id("org.jetbrains.kotlin.android")
 }
@@ -158,6 +159,10 @@ kotlin {
     }
 }
 
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 publishing {
     repositories {
         maven {
@@ -169,13 +174,22 @@ publishing {
             }
         }
     }
+
     publications.withType<MavenPublication> {
 
-        pom {
-            name.set("Framework for laboratory work piikt/1/5-7 in ITMO")
-            description.set("Framework for laboratory work piikt/1/5-7 in ITMO")
-            url.set("https://github.com/landgrafhomyak/itmo-dms-lab")
+        artifact(javadocJar.get())
 
+        pom {
+            name.set("Framework для лабораторных работ ИТМО")
+            description.set("Framework для лабораторных работ 2 семестра факультета ПИИКТА ИТМО")
+            url.set("https://github.com/landgrafhomyak/itmo-dms-lab/tree/core-master")
+
+            licenses {
+                license {
+                    name.set("CC BY-NC 4.0")
+                    url.set("https://creativecommons.org/licenses/by-nc/4.0/")
+                }
+            }
             developers {
                 developer {
                     id.set("landgrafhomyak")
@@ -189,4 +203,9 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    useInMemoryPgpKeys(System.getenv("GPG_SIGNING_KEY"), System.getenv("GPG_SIGNING_PASSWORD"))
+    sign(publishing.publications)
 }

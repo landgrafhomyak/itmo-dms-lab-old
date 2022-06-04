@@ -5,7 +5,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Tests
+name: Publishing
 
 on:
   release:
@@ -18,9 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [
-          ubuntu-latest,
-          macos-latest,
-          windows-latest
+          macos-latest
         ]
 
     runs-on: ${{ matrix.os }}
@@ -35,7 +33,10 @@ jobs:
       - name: Publishing to Maven Central
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: "publishAllPublicationsToSonatypeRepository"
+          arguments: >
+            publishAllPublicationsToSonatypeRepository
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+          GPG_SIGNING_PASSWORD: ${{ secrets.GPG_SIGNING_PASSWORD }}
