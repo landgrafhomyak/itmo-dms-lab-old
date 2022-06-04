@@ -3,6 +3,7 @@
 package io.github.landgrafhomyak.itmo.dms_lab.interop
 
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.InheritableSerialInfo
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialInfo
@@ -19,6 +20,7 @@ import kotlinx.serialization.serializer
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.BINARY)
 @SerialInfo
+@InheritableSerialInfo
 public annotation class DisplayName(val title: String)
 
 /**
