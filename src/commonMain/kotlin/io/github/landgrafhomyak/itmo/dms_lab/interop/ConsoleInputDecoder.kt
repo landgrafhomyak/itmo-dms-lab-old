@@ -39,7 +39,7 @@ public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, Compos
     private val indexStack = mutableListOf<Int>()
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        if (this.nameStack.isEmpty()) this.nameStack.add(descriptor.displayOrSerialName)
+        // if (this.nameStack.isEmpty()) this.nameStack.add(descriptor.displayOrSerialName)
         this.indexStack.add(0)
         return this
     }
@@ -220,13 +220,15 @@ public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, Compos
     override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double =
         this.injectName(descriptor, index, this::decodeDouble)
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
         this.indexStack
             .lastOrNull()
             .run index@{ this@index ?: throw IllegalStateException("Missed index state") }
-            .apply index@{
+            .takeIf { i -> i < descriptor.elementsCount }
+            ?.apply index@{
                 this@ConsoleInputDecoder.indexStack[this@ConsoleInputDecoder.indexStack.lastIndex] = this@index + 1
-            }
+            } ?: CompositeDecoder.DECODE_DONE
 
 
     override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float =
