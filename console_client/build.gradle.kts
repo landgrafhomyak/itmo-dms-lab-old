@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -8,14 +9,11 @@ val ktor_version: String by project
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-//    id("com.android.library")
-//    id("org.jetbrains.kotlin.android")
 }
 
 repositories {
     mavenCentral()
     google()
-    maven(url = "https://github.com/landgrafhomyak/itmo-dms-lab/packages")
 }
 
 kotlin {
@@ -34,12 +32,12 @@ kotlin {
     // linuxArm32Hfp()
     // linuxMipsel32()
     macosX64()
-    // android()
-    // wasm()
 
     targets.all target@{
         when (this@target) {
-            is KotlinNativeTarget -> {}
+            is KotlinNativeTarget -> {
+                binaries.executable(NativeBuildType.values().toList())
+            }
             is KotlinJsTarget     -> {
                 nodejs {}
                 browser {}
@@ -59,12 +57,9 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.3")
+                implementation(project(":common"))
                 @Suppress("SpellCheckingInspection")
                 implementation("io.github.landgrafhomyak.itmo:dms-lab-core:1.0-b0")
-
             }
         }
         val commonTest by getting {
@@ -72,11 +67,13 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-
         val jvmMain by getting {}
 
         val nativeMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+            }
         }
 
         val nativeTest by creating {
@@ -93,6 +90,8 @@ kotlin {
 
         val mingwX64Main by getting {
             dependsOn(nativeMain)
+            dependencies {
+            }
         }
 
         val mingwX64Test by getting {

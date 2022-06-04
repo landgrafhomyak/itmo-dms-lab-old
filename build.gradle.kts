@@ -9,7 +9,3 @@ repositories {
     google()
     mavenCentral()
 }
-
-@Suppress("SpellCheckingInspection")
-group = "com.github.landgrafhomyak.itmo"
-version = "1.0-SNAPSHOT"
