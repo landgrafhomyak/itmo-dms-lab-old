@@ -1,73 +1,20 @@
 package io.github.landgrafhomyak.itmo.dms_lab.interop
 
-import com.github.landgrafhomyak.itmo.dms_lab.collections.ArrayStack
-import com.github.landgrafhomyak.itmo.dms_lab.collections.RedBlackTreeMap
-import com.github.landgrafhomyak.itmo.dms_lab.collections.Stack
-import com.github.landgrafhomyak.itmo.dms_lab.objects.LabWorkFactoryFromDynamicAndString
-import kotlin.jvm.JvmStatic
+import kotlinx.serialization.SerializationException
 
 /**
  * Состояние парсера разбора выражения составного объекта данных
- * @see ObjectParser.parse
  */
 @Suppress("SpellCheckingInspection")
-class ObjectParser private constructor(
+public class ObjectParser private constructor(
     private val raw: String
 ) {
-
-    companion object {
-        /**
-         * Разбирает выражение в переданной строке в формате
-         * * `key=value` - простые строковые данные доступные по ключу `key`
-         * * `key=" some spaces "joined" special \" \\ symbols "` - строковые данные с эеранированием спец. символов
-         * * `obj={ key=value }` - составные объекты, содержащие в себе другие данные и объекты
-         *
-         * В строке может находиться любое количество выражений разделённых пробельными символами
-         * @throws ParseError если нарушен синтаксис
-         * @return словарь пар _строка->строка_ и _строка->словарь_
-         * @see LabWorkFactoryFromDynamicAndString.Value
-         */
-        @JvmStatic
-        fun parse(raw: String) = ObjectParser(raw).out
-    }
-
-    /**
-     * Состояние парсера
-     */
-    private enum class State {
-        /**
-         * Парсит ключ
-         */
-        KEY,
-
-        /**
-         * Парсит значение
-         */
-        VALUE,
-
-        /**
-         * Ожидает значение спец. символа
-         */
-        SLASH
-    }
-
-    /**
-     * Узел стека для обработки вложенных обектов
-     * @property values словарь с данными текущего объекта
-     * @property lastKey последний необработанный ключ
-     */
-    private data class ObjectParserStackNode(
-        val values: MutableMap<String, LabWorkFactoryFromDynamicAndString.Value>,
-    ) {
-        var lastKey: String? = null
-    }
-
     /**
      * Итератор для извлечения срезов из строки, исключающий из [обычного отрезка][IntRange] значения множества.
      * Наследуется от [Iterable] для передачи в [String.slice] без создания дополнительного объекта, является одноразовым
      * @param exclude последовательность чисел для исключения, должна быть строго возрастающей
      * @param from начальное значение отрезка
-     * @param until конечное значение отрезка (не достигается)
+     * @param until конечное значение отрезка (включительно)
      */
     private class IntRangeWithExclude(
         exclude: Iterable<Int>,
@@ -107,7 +54,7 @@ class ObjectParser private constructor(
         override fun iterator(): Iterator<Int> = this
 
         override fun hasNext(): Boolean {
-            while (this.pos < this.until) {
+            while (this.pos <= this.until) {
                 if (this.pos != this.nextExclude) {
                     return true
                 }
@@ -126,177 +73,125 @@ class ObjectParser private constructor(
         }
     }
 
-    /**
-     * Состояние итератора
-     */
-    private var state: State = State.KEY
+    private sealed class Entity {
+        data class Pair(val key: String, val value: String?) : Entity()
 
-    /**
-     * Начальная позиция последней лексемы
-     */
-    private var startPos = 0
+        object ObjectOpen : Entity()
+        object ObjectClose : Entity()
+    }
 
-    /**
-     * Исключённый индексы их последней распаршеной строки
-     */
-    private val excludeIndexes = mutableListOf<Int>()
+    private var lastEntity: Entity? = null
 
-    /**
-     * Стек вложенных объектов
-     */
-    private val stack: Stack<ObjectParserStackNode> = ArrayStack()
+    private var pos: Int = 0
 
-    /**
-     * Проверка, что парсер нужно экранировать все символы
-     */
-    private var inString = false
+    private fun nextEntry(): Entity {
+        this.lastEntity?.apply le@{ return@nextEntry this@le }
 
-    /**
-     * Самый высокоуровневый объект. Результат работы парсера
-     */
-    private val out: Map<String, LabWorkFactoryFromDynamicAndString.Value>
-
-    /**
-     * Сохраняет данные в словарь и проверят дупликацию ключей
-     */
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun saveObject(pos: Int, key: String, value: LabWorkFactoryFromDynamicAndString.Value) {
-        if (this.stack.top.values.put(key, value) != null) {
-            throw ParseError(pos, "Дублирование ключа $key")
+        spaces@ while (this.pos < this.raw.length) {
+            val c = this.raw[this.pos]
+            when {
+                c.isWhitespace() -> {}
+                else             -> break@spaces
+            }
+            this.pos++
         }
-    }
+        if (this.raw[this.pos] == '{') {
+            this.lastEntity = Entity.ObjectOpen
+            return Entity.ObjectOpen
+        }
 
-    /**
-     * Добавляет последние распаршеные примитивные данные в строку
-     */
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun saveString(pos: Int) {
-        val node = this.stack.top
-        this.saveObject(
-            pos, node.lastKey!!.also { node.lastKey = null }, LabWorkFactoryFromDynamicAndString.Value.Simple(
-                this.raw.slice(IntRangeWithExclude(this.excludeIndexes, this.startPos, pos))
-            )
-        )
-        this.excludeIndexes.clear()
-    }
+        val keyStartPos = this.pos
+        key@ while (this.pos < this.raw.length) {
+            val c = this.raw[this.pos]
+            when {
+                c.isWhitespace() -> break@key
+                c.isDigit()      -> {}
+                c.isLetter()     -> {}
+                c == '_'         -> {}
+                c == '}'         -> break@key
+                else             -> throw SerializationException("Неправильный символ в ключе")
+            }
+            this.pos++
+        }
+        val key = this.raw.substring(keyStartPos until this.pos)
 
-    /**
-     * Удаляет последний объект из [стека][ObjectParser.stack] и добавляет его как значение в предыдущий
-     */
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun popAndSaveStack(pos: Int) {
-        val values = this.stack.pop().values
-        if (this.stack.isEmpty())
-            throw ParseError(pos, "Непарная закрывающая скобка")
+        spaces@ while (this.pos < this.raw.length) {
+            val c = this.raw[this.pos]
+            when {
+                c.isWhitespace() -> {}
+                else             -> break@spaces
+            }
+            this.pos++
+        }
+        when (this.raw[this.pos]) {
+            '}'  ->
+                if (key.isEmpty()) {
+                    this.lastEntity = Entity.ObjectClose
+                    return Entity.ObjectClose
+                } else
+                    throw SerializationException("Ключ не может быть без значения или содержать в себе скобки")
+            '='  -> this.pos++
+            else -> throw SerializationException("Невалидный переход от ключа к значению")
+        }
 
-        this.saveObject(pos, this.stack.top.lastKey!!, LabWorkFactoryFromDynamicAndString.Value.Compose(values))
-        this.stack.top.lastKey = null
+        spaces@ while (this.pos < this.raw.length) {
+            val c = this.raw[this.pos]
+            when {
+                c.isWhitespace() -> {}
+                else             -> break@spaces
+            }
+            this.pos++
+        }
 
-        this.state = State.KEY
-        this.startPos = pos + 1
-    }
+        val valueStartPos = this.pos
+        var expectingSlash = false
+        var inString = false
+        val excludedIndicies = mutableListOf<Int>()
 
-    /**
-     * Создаёт новый объект на стеке
-     */
-    @Suppress("NOTHING_TO_INLINE")
-    private inline fun pushStack() {
-        this.stack.push(ObjectParserStackNode(RedBlackTreeMap()))
-    }
-
-    init {
-        this.pushStack()
-
-        this.raw.forEachIndexed { pos, c ->
-            when (this.state) {
-                State.KEY   -> when {
-                    c == '='         -> {
-                        if (startPos == pos) {
-                            throw ParseError(pos, "Название поля не было передано")
-                        }
-                        this.stack.top.lastKey = raw.slice(this.startPos until pos).trim().also { key ->
-                            if (key.any { c -> c.isWhitespace() })
-                                throw ParseError(pos, "Название поля не должно содержать пробельные символы")
-                        }
-                        this.state = State.VALUE
-                        this.startPos = pos + 1
-                    }
-                    c.isWhitespace() -> {
-                        if (pos == this.startPos)
-                            this.startPos++
-                    }
-                    c.isLetter()     -> {}
-                    c.isDigit()      -> {}
-                    c == '_'         -> {}
-                    c == '}'         -> {
-                        if (pos != startPos)
-                            throw ParseError(pos, "Новый объект должен быть значением")
-                        this.popAndSaveStack(pos)
-                    }
-                    else             -> throw ParseError(pos, "Невалидный символ в названии поля")
-                }
-
-                State.VALUE -> when {
-                    c == '"'         -> {
-                        this.excludeIndexes.add(pos)
-                        this.inString = !this.inString
-                    }
-
-                    c == '\\'        -> if (this.inString) {
-                        this.excludeIndexes.add(pos)
-                        this.state = State.SLASH
-                    }
-
-                    c.isWhitespace() -> if (!this.inString) {
-                        if (pos == this.startPos) {
-                            this.startPos++
-                        } else {
-                            this.saveString(pos)
-                            this.state = State.KEY
-                            this.startPos = pos + 1
-                        }
-                    }
-
-                    c == '}'         -> if (!this.inString) {
-                        this.saveString(pos)
-                        this.popAndSaveStack(pos)
-                        this.state = State.KEY
-                        this.startPos = pos + 1
-                    }
-
-                    c == '{'         -> if (!this.inString) {
-                        if (pos != this.startPos)
-                            this.saveString(pos)
-                        this.pushStack()
-                        this.state = State.KEY
-                        this.startPos = pos + 1
-                    }
-                }
-
-                State.SLASH -> when (c) {
+        value@ while (this.pos < this.raw.length) {
+            val c = this.raw[this.pos++]
+            if (expectingSlash) {
+                when (c) {
                     '"', '\\' -> {
-                        this.state = State.VALUE
+                        expectingSlash = false
                     }
-                    else      -> throw ParseError(pos, "Невалидный специальный символ, разрешены только '\"' и '\\'")
+                    else      -> throw SerializationException("Невалидный специальный символ, разрешены только '\"' и '\\'")
                 }
+            } else {
+                when {
+                    c == '"'         -> {
+                        excludedIndicies.add(this.pos)
+                        inString = !inString
+                    }
+
+                    c == '\\'        -> if (inString) {
+                        excludedIndicies.add(this.pos)
+                        expectingSlash = true
+                    }
+
+                    c.isWhitespace() -> if (!inString) {
+                        break@value
+                    }
+
+                    c == '}'         -> if (!inString) {
+                        this.pos--
+                        break@value
+                    }
+
+                    c == '{'         -> if (valueStartPos == this.pos) {
+                        this.pos--
+                        break@value
+                    }
+                }
+
             }
         }
 
-        if (this.state == State.VALUE) {
-            this.saveString(this.raw.length)
-        }
+        val value: String? =
+            if (this.pos == valueStartPos && this.raw[this.pos] == '{') null
+            else this.raw.slice(IntRangeWithExclude(excludedIndicies, valueStartPos, this.pos))
 
-        if (this.inString) {
-            throw ParseError(this.raw.length - 1, "Незакрытый строковый литерал")
-        }
-        if (this.stack.top.lastKey != null || (this.state == State.KEY && this.startPos != this.raw.length)) {
-            throw ParseError(this.raw.length - 1, "Последнему ключу не присвоено значение")
-        }
-        this.out = this.stack.popOrNull()?.values ?: throw ParseError(this.raw.length - 1, "Незакрытый объект")
-        if (this.stack.isNotEmpty()) {
-            throw ParseError(this.raw.length - 1, "Незакрытый объект")
-        }
+        return Entity.Pair(key, value)
     }
-
 }
 
