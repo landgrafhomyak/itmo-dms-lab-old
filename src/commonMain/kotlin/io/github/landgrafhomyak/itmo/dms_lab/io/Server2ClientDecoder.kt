@@ -42,7 +42,7 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
         if (this.raw[this.pos++].c != '{') throw SerializationException("Expected structure begin")
-        this.pos += decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+        decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt().also { s -> this.pos += s }
         return this
     }
 
@@ -140,7 +140,8 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
         val index = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
-        this.pos += decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+        if (index >= 0)
+            decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt().also { s -> this.pos += s }
         return index
     }
 

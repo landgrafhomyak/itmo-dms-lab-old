@@ -5,7 +5,7 @@ on:
     branches: [ core-dev ]
 
 jobs:
-  test:
+  publish:
     strategy:
       fail-fast: false
       matrix:
