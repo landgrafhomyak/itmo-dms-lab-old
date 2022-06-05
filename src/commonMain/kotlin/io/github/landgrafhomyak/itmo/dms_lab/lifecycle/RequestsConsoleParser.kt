@@ -24,11 +24,13 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
         internal suspend fun bind(inlineExtraData: String?): R? = this.bindFun(inlineExtraData)
     }
 
-    private val exitFactory = BoundRequestFactory<R> { null }
+    private val exitFactory = BoundRequestFactory<R> {
+        throw ExitSignal()
+    }
     private val helpFactory = BoundRequestFactory<R> {
         for (m in this@RequestsConsoleParser.commands) {
             if (m.consoleName != null)
-                this@RequestsConsoleParser.logger.info("${m.consoleName}")
+                this@RequestsConsoleParser.logger.info("${m.consoleName} - ${m.description}")
         }
         return@BoundRequestFactory null
     }
@@ -73,7 +75,8 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
         this.mutex.lock()
         this.isRunning = true
         try {
-            while (this.isRunning) {
+            reading@ while (this.isRunning) {
+
                 this.logger.debug("Получение команды")
                 val raw = this.readLine()
                 val reqId: String
@@ -91,18 +94,23 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                             val req = f.bind(reqInlineExtraData)
                             if (req == null) {
                                 this.logger.debug("Команда '$reqId' выполнена на стороне клиента")
-                                continue
+                                continue@reading
                             }
                             this.logger.debug("Команда '$reqId' успешно создана")
                             this.transmitter.send(req)
                             this.logger.debug("Команда '$reqId' успешно отослана на сервер")
+                        } catch (s: ExitSignal) {
+                            throw s
                         } catch (e: Throwable) {
                             this.logger.error(e.stackTraceToString())
                         }
-
+                        continue@reading
                     }
                 }
+                this.logger.error("Неизвестная команда: $reqId")
             }
+        } catch (_: ExitSignal) {
+            this.logger.debug("Получен сигнал остановки")
         } finally {
             this.isRunning = false
             this.mutex.unlock()
