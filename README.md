@@ -1,5 +1,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.6.20-blue.svg)](http://kotlinlang.org)
-[![Tests](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/test.yml/badge.svg)](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/test.yml)
+[![Tests](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/core-test.yml/badge.svg)](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/core-test.yml)
+[![Publishing releases](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/core-publish.yml/badge.svg)](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/core-publish.yml)
+[![Publishing snapshots](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/core-publish-snapshot.yml/badge.svg)](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/core-publish-snapshot.yml)
 [![](https://jitpack.io/v/landgrafhomyak/itmo-dms-lab.svg)](https://jitpack.io/#landgrafhomyak/itmo-dms-lab)
 
 [![Kotlin/MPP](https://img.shields.io/badge/Kotlin/MPP-7F52FF.svg)](https://kotlinlang.org/docs/multiplatform.html)
