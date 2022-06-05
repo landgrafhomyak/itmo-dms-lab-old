@@ -17,14 +17,22 @@ public class Application(remoteHost: String? = null, public val debugMode: Boole
 
     public suspend fun instantiateAndRun() {
         val exchange = LocalRequestCarrier<BoundRequest<AbstractLabWorkCollection, AbstractLabWorkWithId>>()
-        val executor = RequestsExecutor(exchange, InMemoryLabWorkCollection(), ConsoleLogger(AnsiColoring))
-        coroutineScope {
-            launch {
-                executor.run()
+        val logger = ConsoleLogger(AnsiColoring)
+        val executor = RequestsExecutor(exchange, InMemoryLabWorkCollection(), logger)
+        val parser = ConsoleReader(exchange, logger, ::readln)
+        try {
+            coroutineScope {
+                launch {
+                    executor.run()
+                    parser.shutdown()
+                }
+                launch {
+                    parser.run()
+                    executor.shutdown()
+                }
             }
-            launch {
-                // parser
-            }
+        } catch (e: Throwable) {
+            logger.fatal(e.stackTraceToString())
         }
     }
 }
