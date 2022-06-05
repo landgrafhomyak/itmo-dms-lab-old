@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
+import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import kotlin.reflect.KProperty
 
@@ -64,6 +65,10 @@ kotlin {
         when (this@target) {
             is KotlinNativeTarget -> {}
             is KotlinJsTarget     -> {
+                nodejs {}
+                browser {}
+            }
+            is KotlinJsIrTarget   -> {
                 nodejs {}
                 browser {}
             }

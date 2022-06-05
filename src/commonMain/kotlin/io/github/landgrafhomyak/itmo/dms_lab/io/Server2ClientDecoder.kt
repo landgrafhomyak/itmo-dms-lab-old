@@ -12,11 +12,11 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlin.jvm.JvmInline
 
 /**
- * Декодирует данные для передачи от клиента к серверу
- * @see Client2ServerEncoder
+ * Декодирует данные для передачи от сервера к клиенту
+ * @see Server2ClientEncoder
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-public class Client2ServerDecoder constructor(raw: UByteArray) : Decoder, CompositeDecoder {
+public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, CompositeDecoder {
     @JvmInline
     private value class RawWrapper(private val data: UByteArray) {
         @Suppress("NOTHING_TO_INLINE")
@@ -42,6 +42,7 @@ public class Client2ServerDecoder constructor(raw: UByteArray) : Decoder, Compos
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
         if (this.raw[this.pos++].c != '{') throw SerializationException("Expected structure begin")
+        this.pos += decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
         return this
     }
 
@@ -137,8 +138,11 @@ public class Client2ServerDecoder constructor(raw: UByteArray) : Decoder, Compos
     override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double =
         this.decodeDouble()
 
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
-        decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+        val index = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+        this.pos += decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+        return index
+    }
 
     override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float =
         this.decodeFloat()
