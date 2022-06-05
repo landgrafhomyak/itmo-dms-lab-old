@@ -22,7 +22,7 @@ kotlin {
     explicitApi()
 
     jvm()
-    js(BOTH)
+    js(IR)
     ios()
     mingwX64()
     // mingwX86()
