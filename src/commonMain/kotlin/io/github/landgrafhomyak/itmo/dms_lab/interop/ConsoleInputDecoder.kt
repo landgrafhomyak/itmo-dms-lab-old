@@ -259,7 +259,8 @@ public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, Compos
 
 
     override fun endStructure(descriptor: SerialDescriptor) {
-        this.nameStack.removeLastOrNull() ?: throw IllegalStateException("Class names stack was corrupted")
         this.indexStack.removeLastOrNull() ?: throw IllegalStateException("Index stack was corrupted")
+        if (this.indexStack.isNotEmpty())
+            this.nameStack.removeLastOrNull() ?: throw IllegalStateException("Class names stack was corrupted")
     }
 }
