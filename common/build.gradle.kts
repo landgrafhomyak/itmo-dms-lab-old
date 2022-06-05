@@ -15,7 +15,7 @@ plugins {
 repositories {
     mavenCentral()
     google()
-    maven(url = "https://github.com/landgrafhomyak/itmo-dms-lab/packages")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 kotlin {
@@ -63,7 +63,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.3")
                 @Suppress("SpellCheckingInspection")
-                implementation("io.github.landgrafhomyak.itmo:dms-lab-core:1.0-b0")
+                implementation("io.github.landgrafhomyak.itmo:dms-lab-core:1.0-b1-SNAPSHOT")
 
             }
         }

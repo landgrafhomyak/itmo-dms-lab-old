@@ -14,6 +14,7 @@ plugins {
 repositories {
     mavenCentral()
     google()
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 kotlin {
@@ -58,8 +59,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
                 @Suppress("SpellCheckingInspection")
-                implementation("io.github.landgrafhomyak.itmo:dms-lab-core:1.0-b0")
+                implementation("io.github.landgrafhomyak.itmo:dms-lab-core:1.0-b1-SNAPSHOT")
             }
         }
         val commonTest by getting {
