@@ -1,12 +1,14 @@
 package io.github.landgrafhomyak.itmo.dms_lab
 
 import kotlinx.datetime.Instant
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializer
 
 /**
  * Сериализует [Instant] как [количество секунд с начала эпохи](https://ru.wikipedia.org/wiki/Unix-%D0%B2%D1%80%D0%B5%D0%BC%D1%8F)
@@ -15,12 +17,14 @@ import kotlinx.serialization.KSerializer
  * ```
  * @Serializable
  * class InstantContainer(
- *     @Serializable(with=InstantEpochSecondsSerializer::class)
- *     val value:Instant
+ *     @Serializable(with = InstantEpochSecondsSerializer::class)
+ *     val value: Instant
  * )
  * ```
  */
-@Suppress("SpellCheckingInspection")
+@OptIn(ExperimentalSerializationApi::class)
+@Suppress("SpellCheckingInspection", "unused")
+@Serializer(forClass = Instant::class)
 public object InstantEpochSecondsSerializer : KSerializer<Instant> {
     override fun deserialize(decoder: Decoder): Instant =
         Instant.fromEpochSeconds(decoder.decodeLong())

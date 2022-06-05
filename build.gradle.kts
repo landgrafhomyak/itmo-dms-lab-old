@@ -33,7 +33,7 @@ plugins {
 
 @Suppress("SpellCheckingInspection")
 group = "io.github.landgrafhomyak.itmo"
-version = "1.0-b0"
+version = "1.0-b1"
 
 repositories {
     mavenCentral()
@@ -45,7 +45,7 @@ kotlin {
     explicitApi()
 
     jvm()
-    js(BOTH)
+    js(IR)
     ios()
     mingwX64()
     // mingwX86()
@@ -91,6 +91,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
             }
         }
         val jvmMain by getting {}
@@ -181,7 +182,7 @@ publishing {
 
         pom {
             name.set("Framework для лабораторных работ ИТМО")
-            description.set("Framework для лабораторных работ 2 семестра факультета ПИИКТА ИТМО")
+            description.set("Framework для лабораторных работ 2 семестра факультета ПИИКТ университета ИТМО")
             url.set("https://github.com/landgrafhomyak/itmo-dms-lab/tree/core-master")
 
             licenses {
