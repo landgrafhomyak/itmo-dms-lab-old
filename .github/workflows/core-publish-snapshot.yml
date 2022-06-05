@@ -2,7 +2,7 @@ name: Publishing Core Snapshots
 
 on:
   push:
-    branches: [ core-master, core-dev ]
+    branches: [ core-dev ]
 
 jobs:
   test:
