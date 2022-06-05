@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 
 
 /**
- * Набор тестов для [парсера объектов][ObjectParser]
+ * Набор тестов для [парсера объектов][InLineObjectDecoder]
  */
 @Suppress("SpellCheckingInspection")
 internal class ObjectParserTest {
@@ -51,7 +51,7 @@ internal class ObjectParserTest {
     private inline fun testOn(
         raw: String,
         vararg entries: Pair<String, Any>
-    ) = this.assertMap(stringMMapOf(*entries), ObjectParser.parse(raw))
+    ) = this.assertMap(stringMMapOf(*entries), InLineObjectDecoder.parse(raw))
 
     /**
      * Проверят что парсер обрабатывает пустые запросы
@@ -156,7 +156,7 @@ internal class ObjectParserTest {
     @Test
     fun testUnclosedObject() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("obj={")
+            InLineObjectDecoder.parse("obj={")
         }
     }
 
@@ -167,7 +167,7 @@ internal class ObjectParserTest {
     @Test
     fun testUnopenedObject() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("obj=}")
+            InLineObjectDecoder.parse("obj=}")
         }
     }
 
@@ -178,7 +178,7 @@ internal class ObjectParserTest {
     @Test
     fun testUnclosedString() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("""string=" """)
+            InLineObjectDecoder.parse("""string=" """)
         }
     }
 
@@ -189,7 +189,7 @@ internal class ObjectParserTest {
     @Test
     fun testWrongKey() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("<=>")
+            InLineObjectDecoder.parse("<=>")
         }
     }
 
@@ -200,7 +200,7 @@ internal class ObjectParserTest {
     @Test
     fun testNoKey() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("=value")
+            InLineObjectDecoder.parse("=value")
         }
     }
 
@@ -210,7 +210,7 @@ internal class ObjectParserTest {
     @Test
     fun testUnAssignedKey() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("key1=value1 key2")
+            InLineObjectDecoder.parse("key1=value1 key2")
         }
     }
 
@@ -220,7 +220,7 @@ internal class ObjectParserTest {
     @Test
     fun testDuplicatedKey() {
         assertFailsWith(ParseError::class) {
-            ObjectParser.parse("key=value key=value")
+            InLineObjectDecoder.parse("key=value key=value")
         }
     }
 }
