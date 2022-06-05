@@ -34,7 +34,7 @@ plugins {
 
 @Suppress("SpellCheckingInspection")
 group = "io.github.landgrafhomyak.itmo"
-version = "1.0-b1"
+version = "1.0-b1-SNAPSHOT"
 
 repositories {
     mavenCentral()
