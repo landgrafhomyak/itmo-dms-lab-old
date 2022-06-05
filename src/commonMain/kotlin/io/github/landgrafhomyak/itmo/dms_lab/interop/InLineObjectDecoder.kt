@@ -202,6 +202,7 @@ public class InLineObjectDecoder(
         return Entity.Pair(key, value)
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun clear() {
         this.lastEntity = null
     }
