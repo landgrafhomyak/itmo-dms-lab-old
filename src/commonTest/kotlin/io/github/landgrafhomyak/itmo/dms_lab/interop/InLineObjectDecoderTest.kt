@@ -17,6 +17,7 @@ internal class InLineObjectDecoderTest {
      * Тестирует парсер на наборе данных
      * @param raw строка, которая будет передана в парсер
      */
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun <T> testOn(
         raw: String,
         serializer: KSerializer<T>,
@@ -269,4 +270,3 @@ internal class InLineObjectDecoderTest {
         }
     }
 }
-
