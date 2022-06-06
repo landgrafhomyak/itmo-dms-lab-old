@@ -73,12 +73,13 @@ public class InLineObjectDecoder(
                         if (!inString) break@s
                         else value.append(c)
                     c == '\\'        -> if (inString) slashChar = true
+                    c == '}'         -> if (!inString) break@s
                     else             -> value.append(c)
                 }
             }
             this.pos++
         }
-        if (inString || slashChar) throw SerializationException("Коннец ввода")
+        if (inString || slashChar) throw SerializationException("Конец ввода")
         this.state = State.KEY
         return converter(value.toString())
     }
