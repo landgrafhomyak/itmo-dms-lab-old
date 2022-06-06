@@ -34,7 +34,7 @@ plugins {
 
 @Suppress("SpellCheckingInspection")
 group = "io.github.landgrafhomyak.itmo"
-version = "1.0-b1-SNAPSHOT"
+version = "1.0-b0+-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -195,7 +195,7 @@ publishing {
 
         pom {
             name.set("Framework для лабораторных работ ИТМО")
-            description.set("Framework для лабораторных работ 2 семестра факультета ПИИКТ университета ИТМО")
+            description.set("Framework для лабораторных работ 2 семестра направления ПИ факультета ПИИКТ университета ИТМО")
             url.set("https://github.com/landgrafhomyak/itmo-dms-lab/tree/core-master")
 
             licenses {

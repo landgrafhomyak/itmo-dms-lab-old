@@ -1,5 +1,7 @@
 package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
+import io.github.landgrafhomyak.itmo.dms_lab.interop.ConsoleInputDecoder
+import io.github.landgrafhomyak.itmo.dms_lab.interop.InLineObjectDecoder
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestTransmitter
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
@@ -7,11 +9,13 @@ import io.github.landgrafhomyak.itmo.dms_lab.requests.ExitRequestMeta
 import io.github.landgrafhomyak.itmo.dms_lab.requests.HelpRequestMeta
 import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestMeta
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.serialization.encoding.Decoder
 
 public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
     private val transmitter: RequestTransmitter<R>,
     private val logger: Logger,
-    private val readLine: () -> String
+    private val readLine: () -> String,
+    private val triesCount: UInt = 1u
 ) {
     private val commandsFactories: Map<RequestMeta, BoundRequestFactory<R>>
 
@@ -20,8 +24,8 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
         get() = this.commandsFactories.keys
 
 
-    protected inner class BoundRequestFactory<R : BoundRequest<*, *>> internal constructor(private val bindFun: suspend (String?) -> R?) {
-        internal suspend fun bind(inlineExtraData: String?): R? = this.bindFun(inlineExtraData)
+    protected inner class BoundRequestFactory<R : BoundRequest<*, *>> internal constructor(private val bindFun: suspend (Decoder) -> R?) {
+        internal suspend fun bind(inlineExtraData: Decoder): R? = this.bindFun(inlineExtraData)
     }
 
     private val exitFactory = BoundRequestFactory<R> {
@@ -36,7 +40,7 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
     }
 
     protected inner class InitializerContext(private val mapBuilder: MutableMap<RequestMeta, BoundRequestFactory<R>>) {
-        public operator fun RequestMeta.invoke(factory: suspend (String?) -> R?) {
+        public operator fun RequestMeta.invoke(factory: suspend (Decoder) -> R?) {
             when (this@invoke.consoleName) {
                 "help" -> throw IllegalArgumentException("Use function .useHelp() instead")
                 "exit" -> throw IllegalArgumentException("Use function .useExit() instead")
@@ -87,11 +91,15 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                 }
                 this.logger.debug("Получена команда '$reqId' с однострочными данными: $reqInlineExtraData")
 
+                val decoder =
+                    if (reqInlineExtraData == null) ConsoleInputDecoder(this.triesCount)
+                    else InLineObjectDecoder(reqInlineExtraData)
+
                 for ((m, f) in this.commandsFactories) {
                     if (reqId == m.consoleName) {
                         this.logger.debug("Команда '$reqId' опознана")
                         try {
-                            val req = f.bind(reqInlineExtraData)
+                            val req = f.bind(decoder)
                             if (req == null) {
                                 this.logger.debug("Команда '$reqId' выполнена на стороне клиента")
                                 continue@reading
