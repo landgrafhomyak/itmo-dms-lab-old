@@ -42,17 +42,17 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
     protected inner class InitializerContext(private val mapBuilder: MutableMap<RequestMeta, BoundRequestFactory<R>>) {
         public operator fun RequestMeta.invoke(factory: suspend (Decoder) -> R?) {
             when (this@invoke.consoleName) {
-                "help" -> throw IllegalArgumentException("Use function .useHelp() instead")
-                "exit" -> throw IllegalArgumentException("Use function .useExit() instead")
+                "help" -> throw IllegalArgumentException("Use function .useLocalHelp() instead")
+                "exit" -> throw IllegalArgumentException("Use function .useLocalExit() instead")
             }
             this@InitializerContext.mapBuilder[this@invoke] = BoundRequestFactory(factory)
         }
 
-        public fun useHelp() {
+        public fun useLocalHelp() {
             this@InitializerContext.mapBuilder[HelpRequestMeta] = this@RequestsConsoleParser.helpFactory
         }
 
-        public fun useExit() {
+        public fun useLocalExit() {
             this@InitializerContext.mapBuilder[ExitRequestMeta] = this@RequestsConsoleParser.exitFactory
         }
     }

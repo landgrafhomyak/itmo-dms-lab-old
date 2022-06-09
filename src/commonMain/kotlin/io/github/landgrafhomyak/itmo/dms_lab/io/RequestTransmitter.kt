@@ -1,6 +1,7 @@
 package io.github.landgrafhomyak.itmo.dms_lab.io
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
+import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 
 /**
@@ -13,5 +14,5 @@ public interface RequestTransmitter<R: BoundRequest<*, *>> {
     /**
      * Функция для передачи [запроса][BoundRequest]
      */
-    public suspend fun send(request: R)
+    public suspend fun send(request: R): RequestOutputList
 }

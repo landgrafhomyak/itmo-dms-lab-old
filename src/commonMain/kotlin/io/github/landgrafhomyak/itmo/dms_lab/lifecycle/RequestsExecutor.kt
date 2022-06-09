@@ -2,6 +2,7 @@ package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
+import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutput
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestsHistory
@@ -36,7 +37,7 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
     /**
      * [Контекст выполнения][ExecutionContext] [запроса][BoundRequest] с доступом к [модулю][RequestsExecutor]
      */
-    private inner class Context : ExecutionContext<C, E>() {
+    private inner class Context(override val out: RequestOutput) : ExecutionContext<C, E>() {
         override suspend fun subscript(receiver: RequestReceiver<BoundRequest<C, E>>) {
             this@RequestsExecutor.runOnReceiver(receiver)
         }

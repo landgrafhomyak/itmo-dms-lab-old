@@ -2,6 +2,7 @@ package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
+import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutput
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import io.github.landgrafhomyak.itmo.dms_lab.requests.AbstractHistory
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
@@ -11,7 +12,7 @@ import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestsHistory
  * Контекст выполнения [запроса][BoundRequest]
  * @see BoundRequest.execute
  */
-public abstract class ExecutionContext<C : AbstractRecordsCollection<E>, E: Any> {
+public abstract class ExecutionContext<C : AbstractRecordsCollection<E>, E : Any> {
     /**
      * Запускает выполнение из переданного [источника][RequestReceiver].
      * Возвращается после окончания выполнения подпрограммы.
@@ -34,4 +35,10 @@ public abstract class ExecutionContext<C : AbstractRecordsCollection<E>, E: Any>
      */
     @Suppress("SpellCheckingInspection")
     public abstract val log: Logger
+
+    /**
+     * [Вывод][RequestOutput] для клиента
+     */
+    @Suppress("SpellCheckingInspection")
+    public abstract val out: RequestOutput
 }

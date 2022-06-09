@@ -55,6 +55,7 @@ public class Server2ClientEncoder(private val buffer: MutableList<UByteArray>) :
 
     override fun encodeEnum(enumDescriptor: SerialDescriptor, index: Int) {
         this.buffer.add(ubyteArrayOf('#'))
+        this.buffer.add(encodeNumber(index.toUInt().toULong(), Int.SIZE_BYTES))
         val encoded = enumDescriptor.getElementDisplayOrSerialName(index)
             .encodeToByteArray()
             .toUByteArray()

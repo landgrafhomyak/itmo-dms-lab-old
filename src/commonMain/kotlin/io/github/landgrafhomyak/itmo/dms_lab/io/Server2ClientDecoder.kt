@@ -1,10 +1,10 @@
 package io.github.landgrafhomyak.itmo.dms_lab.io
 
+import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.modules.EmptySerializersModule
@@ -30,6 +30,8 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
             if (start > this.data.size || start + size > this.data.size) throw SerializationException("Unexpected end of data")
             return this.data.toByteArray().decodeToString(start, start + size)
         }
+
+        inline val size: Int get() = this.data.size
     }
 
     private val raw = RawWrapper(raw)
@@ -40,11 +42,64 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
 
     private var pos = 0
 
-    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        if (this.raw[this.pos++].c != '{') throw SerializationException("Expected structure begin")
-        decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt().also { s -> this.pos += s }
-        return this
+    private lateinit var lastName: String
+
+    private inline operator fun <T> T.rem(constructor: (String, String) -> RequestOutputList.Entry): NextEntryResult.Entry =
+        this@rem / { n, v -> constructor(n, v.toString()) }
+
+    private inline operator fun <T> T.div(constructor: (String, T) -> RequestOutputList.Entry): NextEntryResult.Entry =
+        NextEntryResult.Entry(constructor(this@Server2ClientDecoder.lastName, this@div))
+
+
+    internal sealed interface NextEntryResult {
+        @JvmInline
+        value class Entry(val e: RequestOutputList.Entry) : NextEntryResult
+
+        @JvmInline
+        value class OpenStruct(val n: String) : NextEntryResult
+        object CloseStruct : NextEntryResult
+        object End : NextEntryResult
     }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    internal fun nextEntry(skipIndex: Boolean): NextEntryResult {
+        if (this.pos >= this.raw.size) {
+            return NextEntryResult.End
+        }
+
+        if (skipIndex) {
+            this.decodeElementIndexEx()
+        }
+
+        return when (this.raw[this.pos].c) {
+            '{'  -> this.beginStructureEx().let { s -> NextEntryResult.OpenStruct(s) }
+            '}'  -> this.endStructureEx().let { NextEntryResult.CloseStruct }
+            '?'  -> this.decodeBoolean() / RequestOutputList::EBoolean
+            'b'  -> this.decodeByte() % RequestOutputList::ENumber
+            'c'  -> this.decodeChar() % RequestOutputList::EString
+            'd'  -> this.decodeDouble() % RequestOutputList::EFloat
+            '#'  -> this.decodeEnumEx() / { n, (_, v) -> RequestOutputList.EEnum(n, v) }
+            'f'  -> this.decodeFloat() % RequestOutputList::EFloat
+            'i'  -> this.decodeInt() % RequestOutputList::ENumber
+            'l'  -> this.decodeLong() % RequestOutputList::ENumber
+            '@'  -> this.decodeNull() / { n, _ -> RequestOutputList.ENull(n) }
+            'h'  -> this.decodeShort() % RequestOutputList::ENumber
+            's'  -> this.decodeString() % RequestOutputList::EString
+            else -> throw SerializationException("Unexpected type")
+        }
+    }
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun beginStructureEx(): String {
+        if (this.raw[this.pos++].c != '{') throw SerializationException("Expected structure begin")
+        val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+        val parsed = this.raw.decodeString(this.pos, size)
+        this.pos += size
+        return parsed
+    }
+
+    override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder =
+        this.beginStructureEx().let { this }
 
     override fun decodeBoolean(): Boolean {
         if (this.raw[this.pos++].c != '?') throw SerializationException("Expected boolean value")
@@ -70,16 +125,18 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
         return Double.fromBits(decodeNumber(Double.SIZE_BYTES) { this.raw[this.pos++] }.toLong())
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun decodeEnumEx(): Pair<Int, String> {
         if (this.raw[this.pos++].c != '#') throw SerializationException("Expected enum value")
+        val index = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
         val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
         val parsed = this.raw.decodeString(this.pos, size)
         this.pos += size
-        return enumDescriptor.elementNames
-            .indexOf(parsed)
-            .apply index@{ if (this@index < 0) throw SerializationException("Invalid enum value") }
+        return index to parsed
     }
+
+
+    override fun decodeEnum(enumDescriptor: SerialDescriptor): Int = this.decodeEnumEx().first
 
     override fun decodeFloat(): Float {
         if (this.raw[this.pos++].c != 'f') throw SerializationException("Expected double value")
@@ -138,12 +195,19 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
     override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double =
         this.decodeDouble()
 
-    override fun decodeElementIndex(descriptor: SerialDescriptor): Int {
+    private inline fun decodeElementIndexEx(): Int {
         val index = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
-        if (index >= 0)
-            decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt().also { s -> this.pos += s }
+        if (index >= 0) {
+            val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
+            val parsed = this.raw.decodeString(this.pos, size)
+            this.pos += size
+            this.lastName = parsed
+        }
         return index
     }
+
+    override fun decodeElementIndex(descriptor: SerialDescriptor): Int =
+        this.decodeElementIndexEx()
 
     override fun decodeFloatElement(descriptor: SerialDescriptor, index: Int): Float =
         this.decodeFloat()
@@ -173,7 +237,11 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
     override fun decodeStringElement(descriptor: SerialDescriptor, index: Int): String =
         this.decodeString()
 
-    override fun endStructure(descriptor: SerialDescriptor) {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun endStructureEx() {
         if (this.raw[this.pos++].c != '}') throw SerializationException("Expected end of structure")
     }
+
+    override fun endStructure(descriptor: SerialDescriptor): Unit =
+        this.endStructureEx()
 }

@@ -37,7 +37,6 @@ public class RequestsRedirector<R : BoundRequest<*, *>>(
             this.mutex.unlock()
         }
     }
-
     /**
      * Останавливает перенаправление [запросов][BoundRequest]
      */
