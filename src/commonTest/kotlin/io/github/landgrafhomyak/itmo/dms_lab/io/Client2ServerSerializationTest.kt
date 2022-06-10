@@ -13,7 +13,7 @@ import kotlinx.serialization.encoding.Encoder
  */
 @Suppress("unused")
 internal class Client2ServerSerializationTest : AbstractSerializationTest() {
-    override fun createEncoder(buffer: MutableList<UByteArray>): Encoder = Client2ServerEncoder(buffer)
+    override fun createEncoder(buffer: UByteArrayBuilder): Encoder = Client2ServerEncoder(buffer)
 
     override fun createDecoder(raw: UByteArray): Decoder = Client2ServerDecoder(raw)
 }

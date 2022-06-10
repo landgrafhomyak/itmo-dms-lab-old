@@ -16,11 +16,11 @@ import kotlin.test.assertEquals
  * Тестирует пару [энкодер][Encoder] -> [декодер][Decoder]
  */
 @Suppress("unused", "SpellCheckingInspection")
-abstract class AbstractSerializationTest {
+internal abstract class AbstractSerializationTest {
     private inline fun <reified T> test(serializer: KSerializer<T>, original: T) = serializer.run {
-        val buffer = mutableListOf<UByteArray>()
+        val buffer = UByteArrayBuilder()
         this.serialize(this@AbstractSerializationTest.createEncoder(buffer), original)
-        val encoded = buffer.flatten().toUByteArray()
+        val encoded = buffer.build()
         val decoded = this.deserialize(this@AbstractSerializationTest.createDecoder(encoded))
         assertEquals(original, decoded)
         return@run
@@ -29,7 +29,7 @@ abstract class AbstractSerializationTest {
     /**
      * Фабрика [энкодера][Encoder]
      */
-    protected abstract fun createEncoder(buffer: MutableList<UByteArray>): Encoder
+    protected abstract fun createEncoder(buffer: UByteArrayBuilder): Encoder
 
 
     /**
