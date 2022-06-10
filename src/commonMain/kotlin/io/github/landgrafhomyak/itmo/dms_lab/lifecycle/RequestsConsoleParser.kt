@@ -3,6 +3,7 @@ package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 import io.github.landgrafhomyak.itmo.dms_lab.interop.ConsoleInputDecoder
 import io.github.landgrafhomyak.itmo.dms_lab.interop.InLineObjectDecoder
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
+import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutputPrinter
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestTransmitter
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.requests.ExitRequestMeta
@@ -15,7 +16,8 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
     private val transmitter: RequestTransmitter<R>,
     private val logger: Logger,
     private val readLine: () -> String,
-    private val triesCount: UInt = 1u
+    private val triesCount: UInt = 1u,
+    private val printer: RequestOutputPrinter
 ) {
     private val commandsFactories: Map<RequestMeta, BoundRequestFactory<R>>
 
@@ -94,7 +96,6 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                 val decoder =
                     if (reqInlineExtraData == null) ConsoleInputDecoder(this.triesCount)
                     else InLineObjectDecoder(reqInlineExtraData)
-
                 for ((m, f) in this.commandsFactories) {
                     if (reqId == m.consoleName) {
                         this.logger.debug("Команда '$reqId' опознана")
@@ -105,7 +106,7 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                                 continue@reading
                             }
                             this.logger.debug("Команда '$reqId' успешно создана")
-                            this.transmitter.send(req)
+                            this.printer.print(this.transmitter.send(req))
                             this.logger.debug("Команда '$reqId' успешно отослана на сервер")
                         } catch (s: ExitSignal) {
                             throw s
