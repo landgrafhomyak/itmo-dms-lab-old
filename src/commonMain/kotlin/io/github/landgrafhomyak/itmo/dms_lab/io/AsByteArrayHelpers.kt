@@ -46,6 +46,7 @@ internal inline fun encodeNumber(value: ULong, size: Int): UByteArray {
     return uba
 }
 
+@Suppress("NOTHING_TO_INLINE")
 internal inline fun UByteArrayBuilder.encodeNumber(value: ULong, size: Int) {
     this.add(io.github.landgrafhomyak.itmo.dms_lab.io.encodeNumber(value, size))
 }

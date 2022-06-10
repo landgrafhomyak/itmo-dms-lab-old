@@ -1,9 +1,9 @@
 package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
-import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
-import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutput
+import io.github.landgrafhomyak.itmo.dms_lab.io.RequestOutputBuilder
+import io.github.landgrafhomyak.itmo.dms_lab.io.RequestOutputDefaultEncodedList
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestsHistory
@@ -37,7 +37,7 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
     /**
      * [Контекст выполнения][ExecutionContext] [запроса][BoundRequest] с доступом к [модулю][RequestsExecutor]
      */
-    private inner class Context(override val out: RequestOutput) : ExecutionContext<C, E>() {
+    private inner class Context(override val out: RequestOutputBuilder) : ExecutionContext<C, E>() {
         override suspend fun subscript(receiver: RequestReceiver<BoundRequest<C, E>>) {
             this@RequestsExecutor.runOnReceiver(receiver)
         }
@@ -59,9 +59,9 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
         while (this.isRunning) {
             try {
                 receiver.fetchAndAnswer { request ->
-                    val rol = RequestOutputList()
+                    val rol = RequestOutputDefaultEncodedList()
                     request.apply {
-                        this@RequestsExecutor.Context(RequestOutput(rol)).execute()
+                        this@RequestsExecutor.Context(rol).execute()
                     }
                     this@RequestsExecutor.history.push(request)
                     return@fetchAndAnswer rol

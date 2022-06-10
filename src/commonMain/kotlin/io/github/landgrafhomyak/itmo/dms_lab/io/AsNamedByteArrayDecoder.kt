@@ -1,6 +1,5 @@
 package io.github.landgrafhomyak.itmo.dms_lab.io
 
-import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException

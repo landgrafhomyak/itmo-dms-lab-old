@@ -2,7 +2,6 @@ package io.github.landgrafhomyak.itmo.dms_lab.io
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import io.github.landgrafhomyak.itmo.dms_lab.lifecycle.RequestsRedirector
-import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.yield
@@ -57,7 +56,7 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
         value class Request(val req: BoundRequest<*, *>) : Exchange
 
         @JvmInline
-        value class Success(val list: RequestOutputList) : Exchange
+        value class Success(val list: RequestOutputAccessor) : Exchange
 
         @JvmInline
         value class Failed(val exception: Throwable) : Exchange
@@ -65,7 +64,7 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
 
     private lateinit var exchange: Exchange
 
-    override suspend fun send(request: R): RequestOutputList {
+    override suspend fun send(request: R): RequestOutputAccessor {
         if (this.isClosed) throw RequestTransmittingIsClosedException("Carrier is closed")
         this.mutex1.lock()
         this.exchange = Exchange.Request(request)
@@ -82,7 +81,7 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
         }
     }
 
-    override suspend fun fetchAndAnswer(executor: suspend (R) -> RequestOutputList) {
+    override suspend fun fetchAndAnswer(executor: suspend (R) -> RequestOutputAccessor) {
         if (this.isClosed) throw RequestTransmittingIsClosedException("Carrier is closed")
         this.mutex2.lock()
         @Suppress("UNCHECKED_CAST")

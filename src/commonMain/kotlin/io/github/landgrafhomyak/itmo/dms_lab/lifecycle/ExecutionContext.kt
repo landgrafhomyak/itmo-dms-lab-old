@@ -2,7 +2,7 @@ package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
-import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutput
+import io.github.landgrafhomyak.itmo.dms_lab.io.RequestOutputBuilder
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import io.github.landgrafhomyak.itmo.dms_lab.requests.AbstractHistory
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
@@ -40,5 +40,5 @@ public abstract class ExecutionContext<C : AbstractRecordsCollection<E>, E : Any
      * [Вывод][RequestOutput] для клиента
      */
     @Suppress("SpellCheckingInspection")
-    public abstract val out: RequestOutput
+    public abstract val out: RequestOutputBuilder
 }
