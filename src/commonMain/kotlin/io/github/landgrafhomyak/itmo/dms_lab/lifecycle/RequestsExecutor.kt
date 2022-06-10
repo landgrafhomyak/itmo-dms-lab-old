@@ -3,7 +3,6 @@ package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestOutputBuilder
-import io.github.landgrafhomyak.itmo.dms_lab.io.RequestOutputDefaultEncodedList
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestsHistory
@@ -58,13 +57,11 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
     private suspend fun runOnReceiver(receiver: RequestReceiver<BoundRequest<C, E>>) {
         while (this.isRunning) {
             try {
-                receiver.fetchAndAnswer { request ->
-                    val rol = RequestOutputDefaultEncodedList()
+                receiver.fetchAndAnswer { request, output ->
                     request.apply {
-                        this@RequestsExecutor.Context(rol).execute()
+                        this@RequestsExecutor.Context(output).execute()
                     }
                     this@RequestsExecutor.history.push(request)
-                    return@fetchAndAnswer rol
                 }
             } catch (_: ExitSignal) {
                 return

@@ -15,7 +15,7 @@ import kotlin.jvm.JvmInline
  *
  * @param R общий тип [запросов][BoundRequest] с указанием типа [коллекции][AbstractRecordsCollection] и элементов в ней
  * @property isClosed флаг для блокировки получения запросов, если установлен,
- * то [`fetch`][RequestReceiver.fetch] возвращает `null`, а [`send`][RequestTransmitter] работает без изменений
+ * то [`fetch`][RequestReceiver.fetchAndAnswer] возвращает `null`, а [`send`][RequestTransmitter] работает без изменений
  * @see LocalRequestReceiver
  * @see RequestsRedirector
  */
@@ -55,19 +55,20 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
         @JvmInline
         value class Request(val req: BoundRequest<*, *>) : Exchange
 
-        @JvmInline
-        value class Success(val list: RequestOutputAccessor) : Exchange
+        object Success : Exchange
 
         @JvmInline
         value class Failed(val exception: Throwable) : Exchange
     }
 
     private lateinit var exchange: Exchange
+    private lateinit var requestOutput: RequestOutputDefaultEncodedInMemoryList
 
     override suspend fun send(request: R): RequestOutputAccessor {
         if (this.isClosed) throw RequestTransmittingIsClosedException("Carrier is closed")
         this.mutex1.lock()
         this.exchange = Exchange.Request(request)
+        this.requestOutput = RequestOutputDefaultEncodedInMemoryList()
         this.mutex2.unlock()
         while (this.exchange is Exchange.Request) {
             yield()
@@ -76,18 +77,19 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
         this.mutex1.unlock()
         when (resp) {
             is Exchange.Failed  -> throw resp.exception
-            is Exchange.Success -> return resp.list
+            is Exchange.Success -> return this.requestOutput
             else                -> throw IllegalStateException()
         }
     }
 
-    override suspend fun fetchAndAnswer(executor: suspend (R) -> RequestOutputAccessor) {
+    override suspend fun fetchAndAnswer(executor: suspend (R, RequestOutputBuilder) -> Unit) {
         if (this.isClosed) throw RequestTransmittingIsClosedException("Carrier is closed")
         this.mutex2.lock()
         @Suppress("UNCHECKED_CAST")
         val req = (this.exchange as? Exchange.Request ?: throw IllegalStateException()).req as R
         try {
-            this.exchange = Exchange.Success(executor(req))
+            executor(req, this.requestOutput)
+            this.exchange = Exchange.Success
         } catch (t: Throwable) {
             this.exchange = Exchange.Failed(t)
             throw t

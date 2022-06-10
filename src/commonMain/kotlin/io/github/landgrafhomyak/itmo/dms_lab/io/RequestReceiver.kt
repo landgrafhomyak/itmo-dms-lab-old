@@ -14,5 +14,5 @@ public interface RequestReceiver<R : BoundRequest<*, *>> {
      * Функция для получения следующего [запроса][BoundRequest] и отправления ответа на него
      * @param executor функция, которая [выполняет][BoundRequest.execute] [запрос][BoundRequest] и возвращает его [вывод][RequestOutputBuilder]
      */
-    public suspend fun fetchAndAnswer(executor: suspend (R) -> RequestOutputAccessor)
+    public suspend fun fetchAndAnswer(executor: suspend (R, RequestOutputBuilder) -> Unit)
 }

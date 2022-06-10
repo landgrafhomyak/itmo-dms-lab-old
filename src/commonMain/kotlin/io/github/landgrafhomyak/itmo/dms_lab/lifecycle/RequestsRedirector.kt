@@ -38,7 +38,7 @@ public class RequestsRedirector<R : BoundRequest<*, *>>(
             coroutineScope {
                 this@RequestsRedirector.coro = launch {
                     while (true) {
-                        this@RequestsRedirector.receiver.fetchAndAnswer { r -> this@RequestsRedirector.transmitter.send(r) }
+                        this@RequestsRedirector.receiver.fetchAndAnswer { r, o -> o.addFrom(this@RequestsRedirector.transmitter.send(r)) }
                     }
                 }
             }

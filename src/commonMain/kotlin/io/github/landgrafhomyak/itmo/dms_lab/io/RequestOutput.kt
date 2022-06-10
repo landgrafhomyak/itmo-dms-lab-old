@@ -40,6 +40,7 @@ public interface RequestOutputBuilder {
     public suspend fun <T> warning(obj: T, serializer: KSerializer<T>)
     public suspend fun error(message: String)
     public suspend fun <T> error(obj: T, serializer: KSerializer<T>)
+    public suspend fun addFrom(src: RequestOutputAccessor)
 }
 
 public interface RequestOutputAccessor : Iterable<RequestOutputMessage> {
@@ -48,13 +49,14 @@ public interface RequestOutputAccessor : Iterable<RequestOutputMessage> {
 }
 
 @Suppress("SpellCheckingInspection")
-public class RequestOutputDefaultEncodedList : RequestOutputBuilder, RequestOutputAccessor {
+public class RequestOutputDefaultEncodedInMemoryList : RequestOutputBuilder, RequestOutputAccessor {
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun <T> write(type: RequestOutputMessageType, serializer: KSerializer<T>, message: T) {
         var alreadyAdded = false
         val encoder = RequestOutputSimplifierEncoder { e ->
             if (alreadyAdded) throw IllegalStateException()
             alreadyAdded = false
-            this@RequestOutputDefaultEncodedList.list.add(RequestOutputMessage(type, e))
+            this@RequestOutputDefaultEncodedInMemoryList.list.add(RequestOutputMessage(type, e))
         }
         serializer.serialize(encoder, message)
     }
@@ -78,6 +80,10 @@ public class RequestOutputDefaultEncodedList : RequestOutputBuilder, RequestOutp
 
     override suspend fun <T> error(obj: T, serializer: KSerializer<T>): Unit =
         this.write(RequestOutputMessageType.ERROR, serializer, obj)
+
+    override suspend fun addFrom(src: RequestOutputAccessor) {
+        this.list.addAll(src)
+    }
 
     override fun get(index: Int): RequestOutputMessage = this.list[index]
 
