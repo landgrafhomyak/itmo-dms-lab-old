@@ -22,8 +22,14 @@ public class RequestOutputList : Iterable<RequestOutputList.Entry> {
 
     private val data = mutableListOf<RequestOutput.Message<Entry>>()
 
+    public fun add(entry: Entry) {
+        this.data.add(entry)
+    }
+
     @Suppress("RemoveRedundantQualifierName")
-    public operator fun get(index: UInt): RequestOutputList.Entry
+    public operator fun get(index: UInt): RequestOutputList.Entry {
+
+    }
 
     public val size: UInt
 }

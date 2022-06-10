@@ -1,6 +1,7 @@
 package io.github.landgrafhomyak.itmo.dms_lab.lifecycle
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
+import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
 import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutput
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
@@ -26,7 +27,6 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
     private val logger: Logger,
     historyCapacity: UInt = 10u
 ) {
-    private val context = this.Context()
     private val history = RequestsHistory<BoundRequest<C, E>>(historyCapacity)
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -57,10 +57,15 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
      */
     private suspend fun runOnReceiver(receiver: RequestReceiver<BoundRequest<C, E>>) {
         while (this.isRunning) {
-            val request = receiver.fetch() ?: return
             try {
-                request.apply { this@RequestsExecutor.context.execute() }
-                this.history.push(request)
+                receiver.fetchAndAnswer { request ->
+                    val rol = RequestOutputList()
+                    request.apply {
+                        this@RequestsExecutor.Context(RequestOutput(rol)).execute()
+                    }
+                    this@RequestsExecutor.history.push(request)
+                    return@fetchAndAnswer rol
+                }
             } catch (_: ExitSignal) {
                 return
             }

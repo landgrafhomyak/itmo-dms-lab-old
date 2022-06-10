@@ -13,10 +13,10 @@ import kotlin.jvm.JvmInline
 
 /**
  * Декодирует данные для передачи от сервера к клиенту
- * @see Server2ClientEncoder
+ * @see AsNamedByteArrayEncoder
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, CompositeDecoder {
+public class AsNamedByteArrayDecoder constructor(raw: UByteArray) : Decoder, CompositeDecoder {
     @JvmInline
     private value class RawWrapper(private val data: UByteArray) {
         @Suppress("NOTHING_TO_INLINE")
@@ -44,11 +44,12 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
 
     private lateinit var lastName: String
 
+    /*
     private inline operator fun <T> T.rem(constructor: (String, String) -> RequestOutputList.Entry): NextEntryResult.Entry =
         this@rem / { n, v -> constructor(n, v.toString()) }
 
     private inline operator fun <T> T.div(constructor: (String, T) -> RequestOutputList.Entry): NextEntryResult.Entry =
-        NextEntryResult.Entry(constructor(this@Server2ClientDecoder.lastName, this@div))
+        NextEntryResult.Entry(constructor(this@AsNamedByteArrayDecoder.lastName, this@div))
 
 
     internal sealed interface NextEntryResult {
@@ -88,9 +89,10 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
             else -> throw SerializationException("Unexpected type")
         }
     }
+     */
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun beginStructureEx(): String {
+    public fun beginStructureEx(): String {
         if (this.raw[this.pos++].c != '{') throw SerializationException("Expected structure begin")
         val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
         val parsed = this.raw.decodeString(this.pos, size)
@@ -126,7 +128,7 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
     }
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun decodeEnumEx(): Pair<Int, String> {
+    public fun decodeEnumEx(): Pair<Int, String> {
         if (this.raw[this.pos++].c != '#') throw SerializationException("Expected enum value")
         val index = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
         val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
@@ -195,7 +197,7 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
     override fun decodeDoubleElement(descriptor: SerialDescriptor, index: Int): Double =
         this.decodeDouble()
 
-    private inline fun decodeElementIndexEx(): Int {
+    public fun decodeElementIndexEx(): Int {
         val index = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
         if (index >= 0) {
             val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
@@ -238,7 +240,7 @@ public class Server2ClientDecoder constructor(raw: UByteArray) : Decoder, Compos
         this.decodeString()
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun endStructureEx() {
+    public fun endStructureEx() {
         if (this.raw[this.pos++].c != '}') throw SerializationException("Expected end of structure")
     }
 

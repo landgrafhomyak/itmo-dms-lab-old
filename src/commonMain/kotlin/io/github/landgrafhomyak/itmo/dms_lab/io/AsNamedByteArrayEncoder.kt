@@ -13,10 +13,10 @@ import kotlinx.serialization.modules.SerializersModule
 
 /**
  * Кодирует данные для передачи от сервера к клиенту
- * @see Server2ClientDecoder
+ * @see AsNamedByteArrayDecoder
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-public class Server2ClientEncoder(private val buffer: MutableList<UByteArray>) : Encoder, CompositeEncoder {
+public class AsNamedByteArrayEncoder(private val buffer: MutableList<UByteArray>) : Encoder, CompositeEncoder {
     @OptIn(ExperimentalSerializationApi::class)
     override val serializersModule: SerializersModule
         get() = EmptySerializersModule

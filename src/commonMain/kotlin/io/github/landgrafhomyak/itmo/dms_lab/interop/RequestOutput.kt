@@ -1,5 +1,6 @@
 package io.github.landgrafhomyak.itmo.dms_lab.interop
 
+import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
@@ -35,9 +36,10 @@ public interface RequestOutput {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-public inline fun RequestOutput(encoder: Encoder): RequestOutput = RequestOutputImpl(encoder)
+public inline fun RequestOutput(rol: RequestOutputList): RequestOutput = RequestOutputImpl(encoder)
 
-public class RequestOutputImpl(private val encoder: Encoder) : RequestOutput {
+@PublishedApi
+internal class RequestOutputImpl(private val encoder: Encoder) : RequestOutput {
 
     private inline fun <T> write(type: RequestOutput.MessageType, serializer: KSerializer<T>, message: T) {
         RequestOutput.Message.serializer(serializer).serialize(this.encoder, RequestOutput.Message(type, message))

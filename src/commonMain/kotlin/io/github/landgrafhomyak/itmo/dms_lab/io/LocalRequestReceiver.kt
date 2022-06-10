@@ -1,6 +1,7 @@
 package io.github.landgrafhomyak.itmo.dms_lab.io
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
+import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 
 /**
@@ -16,9 +17,9 @@ public class LocalRequestReceiver<R : BoundRequest<*, *>>(private val iterator: 
     public constructor(requests: Iterable<R>) : this(requests.iterator())
     public constructor(requests: Sequence<R>) : this(requests.iterator())
 
-    override suspend fun fetch(): R? {
+    override suspend fun fetchAndAnswer(executor: suspend (R) -> RequestOutputList) {
         if (!this.iterator.hasNext())
-            return null
-        return this.iterator.next()
+            throw RequestTransmittingIsClosedException("Iterator is ended")
+        executor(this.iterator.next())
     }
 }

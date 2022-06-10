@@ -11,12 +11,14 @@ import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlin.jvm.JvmInline
 
+public typealias Client2ServerDecoder = AsByteArrayDecoder
+
 /**
  * Декодирует данные для передачи от клиента к серверу
- * @see Client2ServerEncoder
+ * @see AsByteArrayEncoder
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-public class Client2ServerDecoder constructor(raw: UByteArray) : Decoder, CompositeDecoder {
+public class AsByteArrayDecoder constructor(raw: UByteArray) : Decoder, CompositeDecoder {
     @JvmInline
     private value class RawWrapper(private val data: UByteArray) {
         @Suppress("NOTHING_TO_INLINE")
@@ -69,15 +71,9 @@ public class Client2ServerDecoder constructor(raw: UByteArray) : Decoder, Compos
         return Double.fromBits(decodeNumber(Double.SIZE_BYTES) { this.raw[this.pos++] }.toLong())
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun decodeEnum(enumDescriptor: SerialDescriptor): Int {
         if (this.raw[this.pos++].c != '#') throw SerializationException("Expected enum value")
-        val size = decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
-        val parsed = this.raw.decodeString(this.pos, size)
-        this.pos += size
-        return enumDescriptor.elementNames
-            .indexOf(parsed)
-            .apply index@{ if (this@index < 0) throw SerializationException("Invalid enum value") }
+        return decodeNumber(Int.SIZE_BYTES) { this.raw[this.pos++] }.toUInt().toInt()
     }
 
     override fun decodeFloat(): Float {

@@ -4,6 +4,9 @@ import io.github.landgrafhomyak.itmo.dms_lab.io.RequestReceiver
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestTransmitter
 import io.github.landgrafhomyak.itmo.dms_lab.io.LocalRequestCarrier
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 
 /**
@@ -21,6 +24,8 @@ public class RequestsRedirector<R : BoundRequest<*, *>>(
     public var isRunning: Boolean = false
         private set
 
+    private lateinit var coro: Job
+
 
     /**
      * Запускает перенаправление [запросов][BoundRequest]
@@ -30,18 +35,24 @@ public class RequestsRedirector<R : BoundRequest<*, *>>(
         this.mutex.lock()
         this.isRunning = true
         try {
-            while (this.isRunning)
-                this.transmitter.send(this.receiver.fetch() ?: break)
+            coroutineScope {
+                this@RequestsRedirector.coro = launch {
+                    while (true) {
+                        this@RequestsRedirector.receiver.fetchAndAnswer { r -> this@RequestsRedirector.transmitter.send(r) }
+                    }
+                }
+            }
         } finally {
             this.isRunning = false
             this.mutex.unlock()
         }
     }
+
     /**
      * Останавливает перенаправление [запросов][BoundRequest]
      */
     public suspend fun shutdown() {
-        this.isRunning = false
+        this.coro.cancel()
         this.mutex.lock()
         this.mutex.unlock()
     }

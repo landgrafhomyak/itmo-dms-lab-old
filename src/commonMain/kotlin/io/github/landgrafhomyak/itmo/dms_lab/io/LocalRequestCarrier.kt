@@ -2,10 +2,11 @@ package io.github.landgrafhomyak.itmo.dms_lab.io
 
 import io.github.landgrafhomyak.itmo.dms_lab.AbstractRecordsCollection
 import io.github.landgrafhomyak.itmo.dms_lab.lifecycle.RequestsRedirector
-import io.github.landgrafhomyak.itmo.dms_lab.LinkedQueue
+import io.github.landgrafhomyak.itmo.dms_lab.RequestOutputList
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.yield
+import kotlin.jvm.JvmInline
 
 /**
  * _**My life for Aiur!**_
@@ -22,14 +23,10 @@ import kotlinx.coroutines.yield
 @Suppress("unused", "SpellCheckingInspection")
 public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, RequestTransmitter<R> {
     /**
-     * Очередь из необработанных [запросов][BoundRequest]
-     */
-    private val queue = LinkedQueue<R>()
-
-    /**
      * Синхранизационный примитив
      */
-    private val mutex = Mutex()
+    private val mutex1 = Mutex()
+    private val mutex2 = Mutex(true)
 
     public var isClosed: Boolean = false
 
@@ -42,36 +39,59 @@ public class LocalRequestCarrier<R : BoundRequest<*, *>> : RequestReceiver<R>, R
         this.isClosed = true
     }
 
-    /**
+
+    /*
      * Открывает поток
      * @see LocalRequestCarrier.isClosed
      */
+    /*
     @Suppress("unused", "NOTHING_TO_INLINE")
     public inline fun reopen() {
         this.isClosed = false
     }
+    */
 
-    override suspend fun fetch(): R? {
-        while (true) {
-            if (this.isClosed) return null
-            this.mutex.lock()
-            if (this.queue.isNotEmpty()) break
-            this.mutex.unlock()
+
+    private sealed interface Exchange {
+        @JvmInline
+        value class Request(val req: BoundRequest<*, *>) : Exchange
+
+        @JvmInline
+        value class Success(val list: RequestOutputList) : Exchange
+
+        @JvmInline
+        value class Failed(val exception: Throwable) : Exchange
+    }
+
+    private lateinit var exchange: Exchange
+
+    override suspend fun send(request: R): RequestOutputList {
+        if (this.isClosed) throw RequestTransmittingIsClosedException("Carrier is closed")
+        this.mutex1.lock()
+        this.exchange = Exchange.Request(request)
+        this.mutex2.unlock()
+        while (this.exchange is Exchange.Request) {
             yield()
         }
-        try {
-            return this.queue.pop()
-        } finally {
-            this.mutex.unlock()
+        val resp = this.exchange
+        this.mutex1.unlock()
+        when (resp) {
+            is Exchange.Failed  -> throw resp.exception
+            is Exchange.Success -> return resp.list
+            else                -> throw IllegalStateException()
         }
     }
 
-    override suspend fun send(request: R) {
-        this.mutex.lock()
+    override suspend fun fetchAndAnswer(executor: suspend (R) -> RequestOutputList) {
+        if (this.isClosed) throw RequestTransmittingIsClosedException("Carrier is closed")
+        this.mutex2.lock()
+        @Suppress("UNCHECKED_CAST")
+        val req = (this.exchange as? Exchange.Request ?: throw IllegalStateException()).req as R
         try {
-            this.queue.push(request)
-        } finally {
-            this.mutex.unlock()
+            this.exchange = Exchange.Success(executor(req))
+        } catch (t: Throwable) {
+            this.exchange = Exchange.Failed(t)
+            throw t
         }
     }
 }
