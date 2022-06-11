@@ -9,7 +9,7 @@ import kotlinx.datetime.Instant
 public class InMemoryLabWorkCollection(
     override val creationDate: Instant = Clock.System.now(),
 ) : AbstractLabWorkCollection {
-    private val data = mutableMapOf<LabWorkId, NoMetaLabWork>()
+    private val data = mutableMapOf<LabWorkId, LabWork>()
 
     private suspend fun generateId(): LabWorkId {
         return withContext(Dispatchers.Unconfined) {
@@ -45,20 +45,20 @@ public class InMemoryLabWorkCollection(
     }
     */
 
-    override suspend fun add(lw: AbstractLabWork): LabWorkId {
+    override suspend fun add(lw: LabWork): LabWorkId {
         val newId = this.generateId()
-        this.data[newId] = lw.clearMetaAndSave()
+        this.data[newId] = lw
         return newId
     }
 
 
-    override suspend fun update(id: Long, lw: AbstractLabWork): AbstractLabWork? {
+    override suspend fun update(id: LabWorkId, lw: LabWork): LabWork? {
         val old = this.data[id] ?: return null
-        this.data[id] = lw.clearMetaAndSave()
+        this.data[id] = lw
         return old
     }
 
-    override suspend fun removeById(id: Long): AbstractLabWork? {
+    override suspend fun removeById(id: LabWorkId): LabWork? {
         return this.data.remove(id)
     }
 
@@ -66,40 +66,40 @@ public class InMemoryLabWorkCollection(
         this.data.clear()
     }
 
-    override suspend fun addIfMax(lw: AbstractLabWork): AbstractLabWorkCollection.AddIfMaxResult {
+    override suspend fun addIfMax(lw: LabWork): AbstractLabWorkCollection.AddIfMaxResult {
         val biggest = this.data.values.maxOrNull()
         @Suppress("LiftReturnOrAssignment")
         if (biggest == null || lw > biggest) {
-            this.add(lw)
+            val id = this.add(lw)
             return if (biggest == null)
-                AbstractLabWorkCollection.AddIfMaxResult.EMPTY_COLLECTION
+                AbstractLabWorkCollection.AddIfMaxResult.EMPTY_COLLECTION(id)
             else
-                AbstractLabWorkCollection.AddIfMaxResult.GREATEST
+                AbstractLabWorkCollection.AddIfMaxResult.GREATEST(id)
         } else return AbstractLabWorkCollection.AddIfMaxResult.NOT_GREATEST
     }
 
-    override suspend fun filterByDifficulty(difficulty: Difficulty): Iterator<AbstractLabWorkWithId> =
+    override suspend fun filterByDifficulty(difficulty: Difficulty): Iterator<LabWork> =
         this.data
             .asSequence()
             .filter { (_, v) -> v.difficulty == difficulty }
-            .map { (k, v) -> InMemoryLabWork(k, v) }
+            .map { (_, v) -> v }
             .iterator()
 
 
-    override suspend fun sortDescending(): Iterator<AbstractLabWorkWithId> =
+    override suspend fun sortDescending(): Iterator<LabWork> =
         this.data
             .asIterable()
             .toMutableList()
             .apply { sortedByDescending { (_, v) -> v } }
-            .map { (k, v) -> InMemoryLabWork(k, v) }
+            .map { (_, v) -> v }
             .iterator()
 
-    override suspend fun sortFieldDescendingMaximumPoint(): Iterator<AbstractLabWorkWithId> =
+    override suspend fun sortFieldDescendingMaximumPoint(): Iterator<LabWork> =
         this.data
             .asIterable()
             .toMutableList()
             .apply { sortedByDescending { (_, v) -> v.maximumPoint } }
-            .map { (k, v) -> InMemoryLabWork(k, v) }
+            .map { (_, v) -> v }
             .iterator()
 
     override val description: String
@@ -108,18 +108,9 @@ public class InMemoryLabWorkCollection(
     override val size: UInt
         get() = this.data.size.toUInt()
 
-    override fun iterator(): Iterator<AbstractLabWorkWithId> =
+    override fun iterator(): Iterator<LabWork> =
         this.data
             .asSequence()
-            .map { (k, v) -> InMemoryLabWork(k, v) }
+            .map { (_, v) -> v }
             .iterator()
-}
-
-internal class InMemoryLabWork(
-    override val id: Long,
-    private val lw: NoMetaLabWork
-) : AbstractLabWorkWithId, AbstractLabWork by lw {
-    init {
-        this.lw.validate()
-    }
 }

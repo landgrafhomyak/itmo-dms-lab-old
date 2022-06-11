@@ -5,20 +5,18 @@ import io.github.landgrafhomyak.itmo.dms_lab.lifecycle.ExecutionContext
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestMeta
 import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.AbstractLabWorkCollection
-import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.AbstractLabWorkWithId
-import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.AbstractLabWorkWithIdSerializer
-import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.InputLabWork
+import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.LabWork
 import kotlinx.serialization.Serializable
 
 @Serializable
 public class AddRequest(
     @DisplayName("Лабораторная работа")
-    private val lw: InputLabWork
-) : BoundRequest<AbstractLabWorkCollection, AbstractLabWorkWithId> {
+    private val lw: LabWork
+) : BoundRequest<AbstractLabWorkCollection, LabWork> {
     override val meta: RequestMeta
         get() = AddRequest
 
-    override suspend fun ExecutionContext<AbstractLabWorkCollection, AbstractLabWorkWithId>.execute() {
+    override suspend fun ExecutionContext<AbstractLabWorkCollection, LabWork>.execute() {
         this.log.debug("Добавление новой лабораторной работы...")
         val id = this.collection.add(this@AddRequest.lw)
         this.log.debug("Лабораторная работа добавлена с идентификатором $id, отправление сообщения...")

@@ -7,8 +7,8 @@ import io.github.landgrafhomyak.itmo.dms_lab.io.LocalRequestCarrier
 import io.github.landgrafhomyak.itmo.dms_lab.lifecycle.RequestsExecutor
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.AbstractLabWorkCollection
-import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.AbstractLabWorkWithId
 import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.InMemoryLabWorkCollection
+import io.github.landgrafhomyak.itmo.dms_lab.v444588.model.LabWork
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ public class Application(remoteHost: String? = null, public val debugMode: Boole
     public suspend fun instantiateAndRun() {
         val logger = ConsoleLogger(AnsiColoring)
         logger.info("Инициализация приложения...")
-        val exchange = LocalRequestCarrier<BoundRequest<AbstractLabWorkCollection, AbstractLabWorkWithId>>()
+        val exchange = LocalRequestCarrier<BoundRequest<AbstractLabWorkCollection, LabWork>>()
         val executor = RequestsExecutor(exchange, InMemoryLabWorkCollection(), logger)
         val parser = ConsoleReader(exchange, logger, ::readln)
         try {
