@@ -55,7 +55,7 @@ public class RequestOutputDefaultEncodedInMemoryList : RequestOutputBuilder, Req
         var alreadyAdded = false
         val encoder = RequestOutputSimplifierEncoder { e ->
             if (alreadyAdded) throw IllegalStateException()
-            alreadyAdded = false
+            alreadyAdded = true
             this@RequestOutputDefaultEncodedInMemoryList.list.add(RequestOutputMessage(type, e))
         }
         serializer.serialize(encoder, message)
@@ -204,7 +204,7 @@ public class RequestOutputSimplifierCompositeEncoder(private val destination: Mu
 
     @Suppress("NOTHING_TO_INLINE")
     private inline fun buildEncoder(fieldName: String): RequestOutputSimplifierEncoder {
-        var isSaved = true
+        var isSaved = false
         return RequestOutputSimplifierEncoder { e ->
             if (isSaved) throw IllegalStateException()
             isSaved = true
