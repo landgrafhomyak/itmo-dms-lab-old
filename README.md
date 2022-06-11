@@ -1,13 +1,11 @@
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.20-blue.svg)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.6.21-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![DMS Lab framework](https://img.shields.io/badge/DMS%20Lab%20framework-1.0--b0+--SNAPSHOT-blue.svg)](https://github.com/landgrafhomyak/itmo-dms-lab)
 [![Testing variant 444588 implementation](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/v444588-test.yml/badge.svg)](https://github.com/landgrafhomyak/itmo-dms-lab/actions/workflows/v444588-test.yml)
-[![](https://jitpack.io/v/landgrafhomyak/itmo-dms-lab.svg)](https://jitpack.io/#landgrafhomyak/itmo-dms-lab)
 
 [![Kotlin/MPP](https://img.shields.io/badge/Kotlin/MPP-7F52FF.svg)](https://kotlinlang.org/docs/multiplatform.html)
 [![Kotlin/JVM](https://img.shields.io/badge/Kotlin/JVM-7F52FF.svg)](https://kotlinlang.org/docs/jvm-get-started.html)
-<!--
 [![Kotlin/Native](https://img.shields.io/badge/Kotlin/Native-7F52FF.svg)](https://kotlinlang.org/docs/native-get-started.html)
 [![Kotlin/JS](https://img.shields.io/badge/Kotlin/JS-7F52FF.svg)](https://kotlinlang.org/docs/js-get-started.html)
--->
 
 # Лабораторные работы №5-8 по программированию на факультете программной инженерии и компьютерной техники в [ИТМО](http://itmo.ru)
 
@@ -70,21 +68,27 @@ enum class Country {
 ```
 
 ### Команды
+
 * `help` - вывести справку по доступным запросам
-* `info` - вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)
+* `info` - вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и
+  т.д.)
 * `show` - вывести в стандартный поток вывода все элементы коллекции в строковом представлении
 * `add {element}` - добавить новый элемент в коллекцию
 * `update id {element}` - обновить значение элемента коллекции, `id` которого равен заданному
 * `remove_by_id id` - удалить элемент из коллекции по его `id`
 * `clear` - очистить коллекцию
 * `save` - сохранить коллекцию в файл
-* `execute_script file_name` - считать и исполнить скрипт из указанного файла. В скрипте содержатся запросы в таком же виде, в котором их вводит пользователь в интерактивном режиме.
+* `execute_script file_name` - считать и исполнить скрипт из указанного файла. В скрипте содержатся запросы в таком же
+  виде, в котором их вводит пользователь в интерактивном режиме.
 * `exit` - завершить программу (без сохранения в файл)
-* `add_if_max {element}` - добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента этой коллекции _(так как ключ не указан, выбрано поле `LabWork.coordinates.x`)_
-* `remove_greater {element}` - удалить из коллекции все элементы, превышающие заданный _(так как ключ не указан, выбрано поле `LabWork.coordinates.x`)_
+* `add_if_max {element}` - добавить новый элемент в коллекцию, если его значение превышает значение наибольшего элемента
+  этой коллекции _(так как ключ не указан, выбрано поле `LabWork.coordinates.x`)_
+* `remove_greater {element}` - удалить из коллекции все элементы, превышающие заданный _(так как ключ не указан, выбрано
+  поле `LabWork.coordinates.x`)_
 * `history` - вывести последние 10 запросов (без их аргументов)
 * `filter_by_difficulty difficulty` - вывести элементы, значение поля `difficulty` которых равно заданному
-* `print_descending` - вывести элементы коллекции в порядке убывания _(так как ключ не указан, выбрано поле `LabWork.coordinates.x`)_
+* `print_descending` - вывести элементы коллекции в порядке убывания _(так как ключ не указан, выбрано
+  поле `LabWork.coordinates.x`)_
 * `print_field_descending_maximum_point` - вывести значения поля `maximumPoint` всех элементов в порядке убывания
 
 ### Лабораторная работа №5

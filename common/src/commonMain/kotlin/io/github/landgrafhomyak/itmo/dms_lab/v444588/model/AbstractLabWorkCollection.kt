@@ -7,7 +7,7 @@ public interface AbstractLabWorkCollection : AbstractRecordsCollection<AbstractL
     override val description: String
         get() = "Коллекция лабораторных работ"
 
-    public suspend fun add(lw: AbstractLabWork)
+    public suspend fun add(lw: AbstractLabWork): LabWorkId
 
     public suspend fun update(id: Long, lw: AbstractLabWork): AbstractLabWork?
 

@@ -45,8 +45,10 @@ public class InMemoryLabWorkCollection(
     }
     */
 
-    override suspend fun add(lw: AbstractLabWork) {
-        this.data[this.generateId()] = lw.clearMetaAndSave()
+    override suspend fun add(lw: AbstractLabWork): LabWorkId {
+        val newId = this.generateId()
+        this.data[newId] = lw.clearMetaAndSave()
+        return newId
     }
 
 

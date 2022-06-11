@@ -14,8 +14,12 @@ public object ShowRequest : BoundRequest<AbstractLabWorkCollection, AbstractLabW
         get() = this
 
     override suspend fun ExecutionContext<AbstractLabWorkCollection, AbstractLabWorkWithId>.execute() {
-        for (e in this@execute.collection) {
-            this.log.info(e, AbstractLabWorkWithIdSerializer)
+        if (this@execute.collection.size == 0u) {
+            this.out.info("Коллекция пуста")
+        } else {
+            for (e in this@execute.collection) {
+                this.out.info(e, AbstractLabWorkWithIdSerializer)
+            }
         }
     }
 
