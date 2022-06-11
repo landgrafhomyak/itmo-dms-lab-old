@@ -1,5 +1,7 @@
 package io.github.landgrafhomyak.itmo.dms_lab.interop
 
+import io.github.landgrafhomyak.itmo.dms_lab.io.Coloring
+import io.github.landgrafhomyak.itmo.dms_lab.io.NoColoring
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
@@ -19,7 +21,7 @@ public class TriesLimitExceedException : SerializationException("Количес�
  * Предоставляет интерактивный ввод через консоль
  * @param triesCount максимальное количество попыток
  */
-public class ConsoleInputDecoder(private val triesCount: UInt) : Decoder, CompositeDecoder {
+public class ConsoleInputDecoder(private val triesCount: UInt, private val coloring: Coloring = NoColoring) : Decoder, CompositeDecoder {
     /**
      * Стек имён структур и полей
      */

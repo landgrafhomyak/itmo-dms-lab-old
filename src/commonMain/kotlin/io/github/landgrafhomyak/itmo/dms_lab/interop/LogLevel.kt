@@ -13,34 +13,34 @@ public enum class LogLevel {
      * Отладочный вывод
      */
     @SerialName("d")
-    @DisplayName("Отладка")
+    @DisplayName("DEBUG")
     DEBUG,
 
     /**
      * Обычный информационный вывод
      */
     @SerialName("i")
-    @DisplayName("")
+    @DisplayName("INFO")
     INFO,
 
     /**
      * Предупреждение
      */
     @SerialName("w")
-    @DisplayName("Предупреждение")
+    @DisplayName("WARNING")
     WARNING,
 
     /**
      * Ошибка
      */
     @SerialName("e")
-    @DisplayName("Ошибка")
+    @DisplayName("ERROR")
     ERROR,
 
     /**
      * Неотловленное [исключение][Throwable] или ошибка после которой приложение прекращает свою работу
      */
     @SerialName("x")
-    @DisplayName("Критическая ошибка")
+    @DisplayName("FATAL")
     FATAL
 }
