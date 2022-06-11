@@ -60,7 +60,7 @@ public class RequestsRedirector<R : BoundRequest<*, *>>(
             this.logger.debug("Перенаправление `${this::class.simpleName}` остановлено отменой корутины")
             throw e
         } catch (e: Throwable) {
-            this.logger.fatal("Перенаправление `${this::class.simpleName}` прервано ошибкой: \t\n${e.stackTraceToString()}")
+            this.logger.fatal("Перенаправление `${this::class.simpleName}` прервано ошибкой:\n\t${e.stackTraceToString()}")
             throw e
         } finally {
             // this.isRunning = false

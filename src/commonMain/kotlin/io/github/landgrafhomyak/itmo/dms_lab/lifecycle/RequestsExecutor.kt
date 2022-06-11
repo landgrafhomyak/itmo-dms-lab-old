@@ -59,9 +59,9 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
     private suspend fun runOnReceiver(receiver: RequestReceiver<BoundRequest<C, E>>) {
         this.logger.info("Исполнитель `${this::class.simpleName}` успешно запущен")
         while (true) {
-            try {
-                this.logger.debug("Ожидание запроса...")
-                receiver.fetchAndAnswer { request, output ->
+            this.logger.debug("Ожидание запроса...")
+            receiver.fetchAndAnswer { request, output ->
+                try {
                     this.logger.debug("Получен запрос `${request::class.simpleName}`, выполняется...")
                     request.apply {
                         this@RequestsExecutor.Context(output).execute()
@@ -69,10 +69,19 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
                     this.logger.debug("Запрос `${request::class.simpleName}` выполнен, сохранение в историю запросов...")
                     this@RequestsExecutor.history.push(request)
                     this.logger.debug("Запрос `${request::class.simpleName}` выполнен и сохранён в историю")
+                } catch (e: ExitSignal) {
+                    this.logger.debug("Запрос `${request::class.simpleName}` посылает сигнал остановки")
+                    throw e
+                } catch (e: CancellationException) {
+                    @Suppress("SpellCheckingInspection")
+                    this.logger.debug("Выполнение запроса `${request::class.simpleName}` остановлено отменой корутины")
+                    output.error("Запрос отменён")
+                    throw e
+                } catch (e: Throwable) {
+                    this.logger.fatal("Выполнение запроса `${request::class.simpleName}` прервано ошибкой:\n\t${e.stackTraceToString()}")
+                    output.error(e.toString())
+                    throw e
                 }
-            } catch (_: ExitSignal) {
-                this.logger.debug("Получен сигнал остановки в исполнителе `${this::class.simpleName}`")
-                return
             }
         }
     }
@@ -89,12 +98,14 @@ public class RequestsExecutor<C : AbstractRecordsCollection<E>, E : Any>(
         // this.isRunning = true
         try {
             this.runOnReceiver(this.receiver)
+        } catch (e: ExitSignal) {
+            this.logger.debug("Получен сигнал остановки в исполнителе `${this::class.simpleName}`")
         } catch (e: CancellationException) {
             @Suppress("SpellCheckingInspection")
             this.logger.debug("Исполнитель `${this::class.simpleName}` остановлен отменой корутины")
             throw e
         } catch (e: Throwable) {
-            this.logger.fatal("Исполнитель `${this::class.simpleName}` прерван ошибкой: \t\n${e.stackTraceToString()}")
+            this.logger.fatal("Исполнитель `${this::class.simpleName}` прерван ошибкой:\n\t${e.stackTraceToString()}")
             throw e
         } finally {
             // this.isRunning = false

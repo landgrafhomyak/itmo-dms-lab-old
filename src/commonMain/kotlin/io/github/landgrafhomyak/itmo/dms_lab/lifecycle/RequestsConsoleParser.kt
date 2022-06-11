@@ -4,6 +4,7 @@ import io.github.landgrafhomyak.itmo.dms_lab.interop.ConsoleInputDecoder
 import io.github.landgrafhomyak.itmo.dms_lab.interop.InLineObjectDecoder
 import io.github.landgrafhomyak.itmo.dms_lab.interop.Logger
 import io.github.landgrafhomyak.itmo.dms_lab.interop.RequestOutputPrinter
+import io.github.landgrafhomyak.itmo.dms_lab.io.RequestOutputDefaultEncodedInMemoryList
 import io.github.landgrafhomyak.itmo.dms_lab.io.RequestTransmitter
 import io.github.landgrafhomyak.itmo.dms_lab.requests.BoundRequest
 import io.github.landgrafhomyak.itmo.dms_lab.requests.ExitRequestMeta
@@ -35,10 +36,12 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
         throw ExitSignal()
     }
     private val helpFactory = BoundRequestFactory<R> {
-        for (m in this@RequestsConsoleParser.commands) {
-            if (m.consoleName != null)
-                this@RequestsConsoleParser.logger.info("${m.consoleName} - ${m.description}")
-        }
+        this.printer.print(RequestOutputDefaultEncodedInMemoryList().apply output@{
+            for (m in this@RequestsConsoleParser.commands) {
+                if (m.consoleName != null)
+                    this@output.info("${m.consoleName} - ${m.description}")
+            }
+        })
         return@BoundRequestFactory null
     }
 
@@ -127,7 +130,8 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                             this.logger.debug("Выполнение команды `$reqId` остановлено отменой корутины")
                             throw e
                         } catch (e: Throwable) {
-                            this.logger.error("Команда '$reqId' выдаёт ошибку:  \t\n${e.stackTraceToString()}")
+                            this.logger.error("Команда '$reqId' выдаёт ошибку:\n\t${e.stackTraceToString()}")
+                            this.printer.print(RequestOutputDefaultEncodedInMemoryList().apply { error(e.toString()) })
                         }
                         continue@reading
                     }
@@ -143,7 +147,7 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
             throw e
         } catch (e: Throwable) {
             @Suppress("SpellCheckingInspection")
-            this.logger.fatal("Парсер `${this::class.simpleName}` прерван ошибкой: \t\n${e.stackTraceToString()}")
+            this.logger.fatal("Парсер `${this::class.simpleName}` прерван ошибкой:\n\t${e.stackTraceToString()}")
             throw e
         } finally {
             // this.isRunning = false
