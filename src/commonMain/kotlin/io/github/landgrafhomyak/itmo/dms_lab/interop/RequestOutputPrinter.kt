@@ -10,6 +10,7 @@ public interface RequestOutputPrinter {
 }
 
 public class RequestOutputConsolePrinter(private val coloring: Coloring) : RequestOutputPrinter {
+    @Suppress("NOTHING_TO_INLINE")
     private inline fun colored(t: RequestOutputMessageType, s: String): String = when (t) {
         RequestOutputMessageType.INFO    -> s
         RequestOutputMessageType.WARNING -> "${this.coloring.color(Coloring.Color.YELLOW)}$s${this.coloring.reset()}"

@@ -227,7 +227,19 @@ public class ConsoleInputDecoder(private val triesCount: UInt, private val color
         this.indexStack
             .lastOrNull()
             .run index@{ this@index ?: throw IllegalStateException("Missed index state") }
-            .takeIf { i -> i < descriptor.elementsCount }
+            .let { index ->
+                @Suppress("NAME_SHADOWING")
+                var index = index
+                while (index < descriptor.elementsCount) {
+                    if (descriptor.getElementInputIgnored(index)) {
+                        index++
+                        continue
+                    }
+                    return@let index
+                }
+                return@let null
+            }
+            // .takeIf { i -> i < descriptor.elementsCount }
             ?.apply index@{
                 this@ConsoleInputDecoder.indexStack[this@ConsoleInputDecoder.indexStack.lastIndex] = this@index + 1
             } ?: CompositeDecoder.DECODE_DONE
