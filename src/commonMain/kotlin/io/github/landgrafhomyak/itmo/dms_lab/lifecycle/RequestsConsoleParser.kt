@@ -11,6 +11,7 @@ import io.github.landgrafhomyak.itmo.dms_lab.requests.HelpRequestMeta
 import io.github.landgrafhomyak.itmo.dms_lab.requests.RequestMeta
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.serialization.encoding.Decoder
+import kotlin.coroutines.cancellation.CancellationException
 
 public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
     private val transmitter: RequestTransmitter<R>,
@@ -69,25 +70,33 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
 
     private val mutex = Mutex()
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    public var isRunning: Boolean = false
-        private set
+    // @Suppress("MemberVisibilityCanBePrivate")
+    // public var isRunning: Boolean = false
+    //     private set
 
     /**
      * Запускает перенаправление [запросов][BoundRequest]
      */
     public suspend fun run() {
-        if (this.isRunning) throw IllegalStateException("Parser already running, shutdown it first")
-        this.mutex.lock()
-        this.isRunning = true
+        @Suppress("SpellCheckingInspection")
+        this.logger.info("Запуск парсера `${this::class.simpleName}`...")
+        // if (this.isRunning) throw IllegalStateException("Parser already running, shutdown it first")
+        if (!this.mutex.tryLock()) {
+            @Suppress("SpellCheckingInspection")
+            this.logger.fatal("Парсер `${this::class.simpleName}` уже был запущен ранее")
+            throw IllegalStateException("Parser already running, shutdown it first")
+        }
+        // this.isRunning = true
         try {
-            reading@ while (this.isRunning) {
+            @Suppress("SpellCheckingInspection")
+            this.logger.info("Парсер `${this::class.simpleName}` успешно запущен")
+            reading@ while (true) {
 
-                this.logger.debug("Получение команды")
+                this.logger.debug("Получение команды...")
                 val raw = this.readLine()
                 val reqId: String
                 val reqInlineExtraData: String?
-                raw.split(' ', limit = 1).apply raw@{
+                raw.split(' ', limit = 2).apply raw@{
                     reqId = this@raw.first()
                     reqInlineExtraData = this@raw.getOrNull(1)
                 }
@@ -96,22 +105,29 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                 val decoder =
                     if (reqInlineExtraData == null) ConsoleInputDecoder(this.triesCount)
                     else InLineObjectDecoder(reqInlineExtraData)
+
+
                 for ((m, f) in this.commandsFactories) {
                     if (reqId == m.consoleName) {
-                        this.logger.debug("Команда '$reqId' опознана")
+                        this.logger.debug("Команда '$reqId' опознана, попытка прочитать аргументы и создать объект...")
                         try {
                             val req = f.bind(decoder)
                             if (req == null) {
                                 this.logger.debug("Команда '$reqId' выполнена на стороне клиента")
                                 continue@reading
                             }
-                            this.logger.debug("Команда '$reqId' успешно создана")
+                            this.logger.debug("Объект команды '$reqId' успешно создан, пересылка на сервер...")
                             this.printer.print(this.transmitter.send(req))
-                            this.logger.debug("Команда '$reqId' успешно отослана на сервер")
+                            this.logger.debug("Команда '$reqId' успешно отослана на сервер, получен ответ")
                         } catch (s: ExitSignal) {
+                            this.logger.debug("Команда '$reqId' передаёт сигнал остановки")
                             throw s
+                        } catch (e: CancellationException) {
+                            @Suppress("SpellCheckingInspection")
+                            this.logger.debug("Выполнение команды `$reqId` остановлено отменой корутины")
+                            throw e
                         } catch (e: Throwable) {
-                            this.logger.error(e.stackTraceToString())
+                            this.logger.error("Команда '$reqId' выдаёт ошибку:  \t\n${e.stackTraceToString()}")
                         }
                         continue@reading
                     }
@@ -119,19 +135,21 @@ public abstract class RequestsConsoleParser<R : BoundRequest<*, *>>(
                 this.logger.error("Неизвестная команда: $reqId")
             }
         } catch (_: ExitSignal) {
-            this.logger.debug("Получен сигнал остановки")
+            @Suppress("SpellCheckingInspection")
+            this.logger.debug("Получен сигнал остановки в парсере `${this::class.simpleName}`")
+        } catch (e: CancellationException) {
+            @Suppress("SpellCheckingInspection")
+            this.logger.debug("Парсер `${this::class.simpleName}` остановлен отменой корутины")
+            throw e
+        } catch (e: Throwable) {
+            @Suppress("SpellCheckingInspection")
+            this.logger.fatal("Парсер `${this::class.simpleName}` прерван ошибкой: \t\n${e.stackTraceToString()}")
+            throw e
         } finally {
-            this.isRunning = false
+            // this.isRunning = false
             this.mutex.unlock()
+            @Suppress("SpellCheckingInspection")
+            this.logger.info("Парсер `${this::class.simpleName}` остановлен")
         }
-    }
-
-    /**
-     * Останавливает перенаправление [запросов][BoundRequest]
-     */
-    public suspend fun shutdown() {
-        this.isRunning = false
-        this.mutex.lock()
-        this.mutex.unlock()
     }
 }
